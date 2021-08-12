@@ -67,13 +67,14 @@ const spawnProcess = async (command, args, logs) =>
 
 
 const handleRequest = async (body) => {
-  const { image, tag = 'latest', ports } = body;
+  const { image, tag = 'latest', name, ports } = body;
 
   let logs = [];
 
   await spawnProcess('docker', ['pull', `${image}:${tag}`], logs);
-  await spawnProcess('docker', ['rm', `$(docker stop $(docker ps -a -q --filter ancestor=${image}))`], logs)
-  await spawnProcess('docker', ['run', '-d', '-p', ports, `${image}:${tag}`], logs);
+  await spawnProcess('docker', ['stop', name], logs);
+  await spawnProcess('docker', ['rm', name], logs);
+  await spawnProcess('docker', ['run', '-d', '-p', ports, '--name', name, `${image}:${tag}`], logs);
 
   return logs.join('\n');
 }
