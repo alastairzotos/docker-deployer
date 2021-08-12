@@ -1,14 +1,16 @@
 const http = require('http');
 const fs = require('fs');
 const child_process = require('child_process');
+const path = require('path');
 
 const readEnv = () => new Promise((resolve, reject) => {
-  fs.access('.env', fs.F_OK, err => {
+  const envPath = path.resolve(__dirname, '.env');
+  fs.access(envPath, fs.F_OK, err => {
     if (err) {
       return reject('No .env file found')
     }
 
-    fs.readFile('.env', (err, data) => {
+    fs.readFile(envPath, (err, data) => {
       if (err) {
         return reject(err);
       }
