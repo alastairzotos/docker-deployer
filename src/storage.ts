@@ -38,7 +38,7 @@ export const appendToStorage = (data: Storage) => {
     ), [])
     .join('\n');
 
-    fs.writeFileSync(storageFilePath, dataStr);
+  fs.writeFileSync(storageFilePath, dataStr);
 }
 
 
