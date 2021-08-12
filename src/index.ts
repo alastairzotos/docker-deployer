@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { Commands } from "./core";
-import { handleStart } from "./start";
-import { handleStop } from "./stop";
+import { handleStart, handleStop } from "./commands";
 
 export const handleCommand = async () => {
   const [cmd, ...args] = process.argv.slice(2)

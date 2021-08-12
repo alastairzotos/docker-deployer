@@ -1,5 +1,5 @@
-import { cliName } from "./core";
-import { setupStorage } from "./storage";
+import { cliName } from "../core";
+import { setupStorage } from "../storage";
 
 export const handleStop = async () => {
   const storage = await setupStorage();
