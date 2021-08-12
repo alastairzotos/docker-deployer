@@ -1,5 +1,5 @@
 import * as readline from 'readline-sync';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { appendToStorage, readStorage, Storage } from "./storage";
 
 export const verify = async (password: string) => {
@@ -23,6 +23,6 @@ export const setupApiKey = async (storage: Storage) => {
       password2 = readline.question('Confirm password: ', { hideEchoBack: true });
     }
 
-    await appendToStorage({ API_KEY: await bcrypt.hash(password1, 10) });
+    await appendToStorage({ API_KEY: await bcrypt.hash(password1, await bcrypt.genSalt(10)) });
   }
 }
