@@ -51,7 +51,7 @@ const authenticate = (headers, key) =>
 
 const spawnProcess = async (command, args, logs) =>
   new Promise((resolve, reject) => {
-    const proc = child_process.spawn(command, args);
+    const proc = child_process.spawn(command, args, { shell: true });
 
     proc.stdout.pipe(process.stdout)
     proc.stderr.pipe(process.stderr);
@@ -65,13 +65,15 @@ const spawnProcess = async (command, args, logs) =>
     proc.on('error', error => reject(error));
   });
 
+
 const handleRequest = async (body) => {
-  const { image, ports } = body;
+  const { image, tag = 'latest', ports } = body;
 
   let logs = [];
 
-  await spawnProcess('docker', ['pull', image], logs);
-  await spawnProcess('docker', ['run', '-d', '-p', ports, image], logs);
+  await spawnProcess('docker', ['pull', `${image}:${tag}`], logs);
+  await spawnProcess('docker', ['rm', `$(docker stop $(docker ps -a -q --filter ancestor=${image}))`], logs)
+  await spawnProcess('docker', ['run', '-d', '-p', ports, `${image}:${tag}`], logs);
 
   return logs.join('\n');
 }
