@@ -41,6 +41,10 @@ export const appendToStorage = (data: Storage) => {
   fs.writeFileSync(storageFilePath, dataStr);
 }
 
+export const deleteStorage = () => {
+  fs.rmSync(storageFilePath);
+  fs.rmdirSync(storagePath);
+}
 
 export const setupStorage = (): Storage => {
   if (!fs.existsSync(storagePath)) {
