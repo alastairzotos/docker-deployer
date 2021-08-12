@@ -3,8 +3,7 @@ import * as crypto from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import { appendToStorage, readStorage, Storage } from "./storage";
-// import { keypair } from 'keypair';
-const keypair = require('keypair');
+const keypair = require('keypair'); // Stupid
 
 const passphrase = () => 'the-passphrase';
 
@@ -23,34 +22,8 @@ interface Keys {
   publicKey: string;
 }
 
-// const generateKeys = (): Promise<Keys> =>
-//   new Promise((resolve, reject) => {
-//     crypto.generateKeyPair('rsa', {
-//       modulusLength: 4096,
-//       publicKeyEncoding: {
-//         type: 'spki',
-//         format: 'pem'
-//       },
-//       privateKeyEncoding: {
-//         type: 'pkcs8',
-//         format: 'pem',
-//         cipher: 'aes-256-cbc',
-//         passphrase: passphrase()
-//       }
-//     }, (err, publicKey, privateKey) => {
-//       if (err) {
-//         return reject(err);
-//       }
-
-//       resolve({ publicKey, privateKey });
-//     });
-//   })
-
-
 const getKeys = async (): Promise<Keys> => {
   if (!fs.existsSync(privateKeyFilePath)) {
-    // const { privateKey, publicKey } = await generateKeys();
-
     const keys = keypair();
 
     const privateKey = keys.private;
