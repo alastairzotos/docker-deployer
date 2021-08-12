@@ -1,22 +1,6 @@
 import * as express from 'express';
 import { spawnProcess } from './proc';
-import { verify } from './security';
-
-const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const headers = req.headers;
-
-  if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {
-    return res.status(401).send('Unauthorized');
-  }
-
-  const token = headers.authorization.split(' ')[1];
-
-  if (!(await verify(token))) {
-    return res.status(401).send('Unauthorized');
-  }
-
-  next();
-}
+import { authenticate } from './security';
 
 const handleDeploy = async (
   image: string,

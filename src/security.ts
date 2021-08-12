@@ -1,11 +1,23 @@
 import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
+import * as express from 'express';
 import { appendToStorage, readStorage, Storage } from "./storage";
 
-export const verify = async (password: string) => {
+export const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const { API_KEY } = await readStorage();
-  
-  return await bcrypt.compare(password, API_KEY);
+  const headers = req.headers;
+
+  if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  const token = headers.authorization.split(' ')[1];
+
+  if (!(await bcrypt.compare(token, API_KEY))) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  next();
 }
 
 export const setupApiKey = async (storage: Storage) => {
