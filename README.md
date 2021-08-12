@@ -5,6 +5,9 @@ A simple service to deploy docker containers to your servers.
 ## Getting started
 
 ### Installation and starting the service
+
+SSH into your server and run the following:
+
 ```
 $ npm i -g @bitmetro/docker-deployer
 $ ddeploy start
