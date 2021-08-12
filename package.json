@@ -1,6 +1,6 @@
 {
   "name": "@bitmetro/docker-deployer",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -29,5 +29,8 @@
     "express": "^4.17.1",
     "keypair": "^1.0.3",
     "readline-sync": "^1.4.10"
+  },
+  "bin": {
+    "ddeploy": "dist/index.js"
   }
 }

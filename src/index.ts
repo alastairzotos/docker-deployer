@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { Commands } from "./core";
 import { handleStart } from "./start";
 import { handleStop } from "./stop";
