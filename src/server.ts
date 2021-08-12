@@ -1,6 +1,7 @@
 import * as express from 'express';
 import { spawnProcess } from './proc';
 import { authenticate } from './security';
+import { setupStorage } from './storage';
 
 const handleDeploy = async (
   image: string,
@@ -21,6 +22,7 @@ const handleDeploy = async (
 export const startServer = () => {
   const port = 4042;
 
+  setupStorage();
   const app = express();
 
   app.use(express.json());

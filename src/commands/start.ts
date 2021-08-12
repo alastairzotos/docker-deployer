@@ -1,10 +1,10 @@
 import * as child_process from 'child_process';
 import { cliName } from "../core";
 import { setupApiKey } from "../security";
-import { appendToStorage, setupStorage } from "../storage";
+import { appendToStorage, readStorage } from "../storage";
 
 export const handleStart = async () => {
-  const storage = setupStorage();
+  const storage = readStorage();
   await setupApiKey(storage);
 
   const child = child_process.spawn('node', [`${__dirname}/../server.js`], { stdio: 'ignore', detached: true });

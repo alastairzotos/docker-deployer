@@ -4,7 +4,7 @@ import * as express from 'express';
 import { appendToStorage, readStorage, Storage } from "./storage";
 
 export const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const { API_KEY } = await readStorage();
+  const { API_KEY } = readStorage();
   const headers = req.headers;
 
   if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {

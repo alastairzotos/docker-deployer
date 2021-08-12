@@ -1,8 +1,8 @@
 import { cliName } from "../core";
-import { setupStorage } from "../storage";
+import { readStorage } from "../storage";
 
 export const handleStop = async () => {
-  const storage = await setupStorage();
+  const storage = await readStorage();
 
   if (!storage['PID']) {
     console.log(`'${cliName}' is not currently running. Run '${cliName} start' to start the deployment server`);

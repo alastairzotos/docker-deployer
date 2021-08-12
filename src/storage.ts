@@ -6,25 +6,31 @@ const storageFilePath = path.resolve(storagePath, '.data');
 
 export type Storage = { [key: string]: string };
 
+export const setupStorage = () => {
+  if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath);
+  }
+
+  if (!fs.existsSync(storageFilePath)) {
+    fs.writeFileSync(storageFilePath, '');
+  }
+}
+
 export const readStorage = (): Storage => {
-  if (fs.existsSync(storageFilePath)) {
-    const data = fs.readFileSync(storageFilePath).toString();
+  const data = fs.readFileSync(storageFilePath).toString();
 
-    if (data.length === 0) {
-      return {};
-    }
+  if (data.length === 0) {
+    return {};
+  }
 
-    return data.toString()
-      .split('\n')
-      .filter(line => line.trim().length > 0)
-      .map(line => line.split('='))
-      .reduce((acc, item) => ({
-        ...acc,
-        [item[0]]: item[1]
-      }), {});
-  } 
-  
-  throw new Error('Cannot find storage file');
+  return data.toString()
+    .split('\n')
+    .filter(line => line.trim().length > 0)
+    .map(line => line.split('='))
+    .reduce((acc, item) => ({
+      ...acc,
+      [item[0]]: item[1]
+    }), {});
 }
 
 export const appendToStorage = (data: Storage) => {
@@ -34,28 +40,19 @@ export const appendToStorage = (data: Storage) => {
   const dataStr = Object.keys(newData)
     .reduce((items, key) => (
       [...items, `${key}=${newData[key]}`]
-        .filter(item => item.trim().length > 0)
-    ), [])
+    ), [] as string[])
+    .filter(line => line.length > 0)
     .join('\n');
 
   fs.writeFileSync(storageFilePath, dataStr);
 }
 
 export const deleteStorage = () => {
-  fs.rmSync(storageFilePath);
-  fs.rmdirSync(storagePath);
-}
-
-export const setupStorage = (): Storage => {
-  if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath);
+  if (fs.existsSync(storageFilePath)) {
+    fs.rmSync(storageFilePath);
   }
 
-  if (!fs.existsSync(storageFilePath)) {
-    fs.writeFileSync(storageFilePath, '');
-
-    return {};
+  if (fs.existsSync(storagePath)) {
+    fs.rmdirSync(storagePath);
   }
-  
-  return readStorage();
 }
