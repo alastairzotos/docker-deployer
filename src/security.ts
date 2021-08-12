@@ -5,8 +5,6 @@ import * as path from 'path';
 import { appendToStorage, readStorage, Storage } from "./storage";
 const keypair = require('keypair'); // Stupid
 
-const passphrase = () => 'the-passphrase';
-
 const keyPath = path.resolve(__dirname, 'private');
 const publicKeyFilePath = path.resolve(keyPath, 'public_key.pem');
 const privateKeyFilePath = path.resolve(keyPath, 'private_key.pem');
@@ -46,7 +44,7 @@ const sign = async (data: string) => {
   
   const sign = crypto.createSign('RSA-SHA256');
   sign.update(Buffer.from(data));
-  return sign.sign({ key: privateKey, passphrase: passphrase() }, 'base64');
+  return sign.sign(privateKey, 'base64');
 }
 
 export const verify = async (data: string) => {
