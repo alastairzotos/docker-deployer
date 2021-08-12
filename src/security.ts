@@ -9,7 +9,6 @@ export const verify = async (password: string) => {
 }
 
 export const setupApiKey = async (storage: Storage) => {
-
   if (!storage['API_KEY']) {
     console.log('Enter a password for this server');
     console.log('You will need to provide this as your bearer token when deploying your containers')
