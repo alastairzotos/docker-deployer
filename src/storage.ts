@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-export const storagePath = path.resolve(__dirname, 'storage');
-export const storageFilePath = path.resolve(storagePath, '.data');
+const storagePath = path.resolve(__dirname, 'storage');
+const storageFilePath = path.resolve(storagePath, '.data');
 
 export type Storage = { [key: string]: string };
 
