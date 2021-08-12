@@ -41,7 +41,12 @@ export const appendToStorage = (data: Storage) => {
     fs.writeFileSync(storageFilePath, dataStr);
 }
 
-const setupStorageFile = (): Storage => {
+
+export const setupStorage = (): Storage => {
+  if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath);
+  }
+
   if (!fs.existsSync(storageFilePath)) {
     fs.writeFileSync(storageFilePath, '');
 
@@ -49,12 +54,4 @@ const setupStorageFile = (): Storage => {
   }
   
   return readStorage();
-}
-
-export const setupStorage = (): Storage => {
-  if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath);
-  }
-
-  return setupStorageFile();
 }

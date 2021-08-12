@@ -9,12 +9,6 @@ const keyPath = path.resolve(__dirname, 'private');
 const publicKeyFilePath = path.resolve(keyPath, 'public_key.pem');
 const privateKeyFilePath = path.resolve(keyPath, 'private_key.pem');
 
-export const createPrivatePath = () => {
-  if (!fs.existsSync(keyPath)) {
-    fs.mkdirSync(keyPath);
-  }
-}
-
 interface Keys {
   privateKey: string;
   publicKey: string;
@@ -57,28 +51,24 @@ export const verify = async (data: string) => {
   return verify.verify(publicKey, API_KEY, 'base64');
 }
 
-export const getApiKey = async (storage: Storage): Promise<string> => {
-  createPrivatePath();
+export const setupApiKey = async (storage: Storage) => {
+  if (!fs.existsSync(keyPath)) {
+    fs.mkdirSync(keyPath);
+  }
 
   if (!storage['API_KEY']) {
     console.log('Enter a password for this server');
     console.log('You will need to provide this as your bearer token when deploying your containers')
 
     let password1 = readline.question('Enter password: ', { hideEchoBack: true });
-    let password2 = readline.question('Enter password again: ', { hideEchoBack: true });
+    let password2 = readline.question('Confirm password: ', { hideEchoBack: true });
 
     while (password1 !== password2) {
       console.log('Passwords don\'t match, please try again.');
       password1 = readline.question('Enter password: ', { hideEchoBack: true });
-      password2 = readline.question('Enter password again: ', { hideEchoBack: true });
+      password2 = readline.question('Confirm password: ', { hideEchoBack: true });
     }
 
-    const signed = await sign(password1);
-
-    await appendToStorage({ API_KEY: signed });
-
-    return signed;
+    await appendToStorage({ API_KEY: await sign(password1) });
   }
-
-  return storage['API_KEY'];
 }
