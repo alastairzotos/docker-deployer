@@ -6,7 +6,26 @@ const storageFilePath = path.resolve(storagePath, '.data');
 
 export type Storage = { [key: string]: string };
 
-export const setupStorage = () => {
+const objectToString = (data: Storage): string =>
+  Object.keys(data)
+    .reduce((items, key) => (
+      [...items, `${key}=${data[key]}`]
+    ), [] as string[])
+    .filter(line => line.length > 0)
+    .join('\n');
+
+const stringToObject = (str: string): Storage =>
+  str
+    .split('\n')
+    .filter(line => line.trim().length > 0)
+    .map(line => line.split('='))
+    .reduce((acc, item) => ({
+      ...acc,
+      [item[0]]: item[1]
+    }), {})
+
+
+export const createStorage = () => {
   if (!fs.existsSync(storagePath)) {
     fs.mkdirSync(storagePath);
   }
@@ -14,37 +33,6 @@ export const setupStorage = () => {
   if (!fs.existsSync(storageFilePath)) {
     fs.writeFileSync(storageFilePath, '');
   }
-}
-
-export const readStorage = (): Storage => {
-  const data = fs.readFileSync(storageFilePath).toString();
-
-  if (data.length === 0) {
-    return {};
-  }
-
-  return data.toString()
-    .split('\n')
-    .filter(line => line.trim().length > 0)
-    .map(line => line.split('='))
-    .reduce((acc, item) => ({
-      ...acc,
-      [item[0]]: item[1]
-    }), {});
-}
-
-export const appendToStorage = (data: Storage) => {
-  const storage = readStorage();
-
-  const newData = { ...storage, ...data };
-  const dataStr = Object.keys(newData)
-    .reduce((items, key) => (
-      [...items, `${key}=${newData[key]}`]
-    ), [] as string[])
-    .filter(line => line.length > 0)
-    .join('\n');
-
-  fs.writeFileSync(storageFilePath, dataStr);
 }
 
 export const deleteStorage = () => {
@@ -56,3 +44,19 @@ export const deleteStorage = () => {
     fs.rmdirSync(storagePath);
   }
 }
+
+export const readStorage = (): Storage => {
+  const data = fs.readFileSync(storageFilePath).toString();
+
+  if (data.length === 0) {
+    return {};
+  }
+
+  return stringToObject(data.toString());
+}
+
+export const appendToStorage = (data: Storage) => 
+  fs.writeFileSync(
+    storageFilePath,
+    objectToString({ ...readStorage(), ...data })
+  );

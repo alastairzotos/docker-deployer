@@ -2,8 +2,7 @@ import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
 import * as express from 'express';
 import { appendToStorage, readStorage } from "./storage";
-
-const pwdKey = 'PASSWORD_HASH';
+import { pwdKey } from './core';
 
 export const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const pwdHash = readStorage()[pwdKey];

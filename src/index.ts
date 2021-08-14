@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { Commands } from "./core";
 import { handleStart, handleStop, handleReset } from "./commands";
-import { setupStorage } from "./storage";
+import { createStorage } from "./storage";
 
 export const handleCommand = async () => {
-  setupStorage();
+  createStorage();
   
   const commands: Commands = {
     start: handleStart,
