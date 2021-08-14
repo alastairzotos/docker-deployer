@@ -1,7 +1,6 @@
 import * as pm2 from 'pm2';
 import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
-import * as path from 'path';
 import { appendToStorage, readStorage } from '../storage';
 import { cliName, processName, pwdKey } from "../core";
 
