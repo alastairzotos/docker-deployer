@@ -1,17 +1,32 @@
-import * as child_process from 'child_process';
-import { cliName } from "../core";
+import * as pm2 from 'pm2';
+import { cliName, processName } from "../core";
 import { setupApiKey } from "../security";
-import { appendToStorage, readStorage } from "../storage";
+import { readStorage } from "../storage";
 
 export const handleStart = async () => {
   const storage = readStorage();
   await setupApiKey(storage);
 
-  const child = child_process.spawn('node', [`${__dirname}/../server.js`], { stdio: 'ignore', detached: true });
-  child.unref();
+  pm2.connect(error => {
+    if (error) {
+      console.error(error.message);
+      process.exit(1);
+    }
 
-  await appendToStorage({ PID: String(child.pid) });
+    pm2.start(
+      {
+        script: `${__dirname}/../server.js`,
+        name: processName
+      },
+      error => {
+        if (error) {
+          console.error(error.message);
+          process.exit(1);
+        }
 
-  console.log(`Deployment server started. PID: ${child.pid}`);
-  console.log(`Type '${cliName} stop' to stop`);
+        console.log(`Deployment server started. Run '${cliName} stop' to stop`);
+        pm2.disconnect();
+      }
+    )
+  })
 }
