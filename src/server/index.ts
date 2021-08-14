@@ -1,7 +1,25 @@
 import * as express from 'express';
+import * as bcrypt from 'bcryptjs';
+import { pwdKey } from '../core';
+import { createStorage, readStorage } from '../storage';
 import { spawnProcess } from './proc';
-import { authenticate } from './security';
-import { createStorage } from './storage';
+
+export const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const pwdHash = (await readStorage())[pwdKey];
+  const headers = req.headers;
+
+  if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  const token = headers.authorization.split(' ')[1];
+
+  if (!(await bcrypt.compare(token, pwdHash))) {
+    return res.status(401).send('Unauthorized');
+  }
+
+  next();
+}
 
 const handleDeploy = async (
   image: string,

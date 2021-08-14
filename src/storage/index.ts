@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';
 
-const storagePath = path.resolve(__dirname, 'storage');
+const storagePath = path.resolve(__dirname, '..', '_storage');
 const storageFilePath = path.resolve(storagePath, '.data');
 
 const readFile = promisify(fs.readFile);
@@ -53,15 +53,8 @@ export const deleteStorage = async () => {
   }
 }
 
-export const readStorage = async (): Promise<Storage> => {
-  const data = (await readFile(storageFilePath)).toString();
-
-  if (data.length === 0) {
-    return {};
-  }
-
-  return stringToObject(data.toString());
-}
+export const readStorage = async (): Promise<Storage> =>
+  stringToObject((await readFile(storageFilePath)).toString());
 
 export const appendToStorage = async (data: Storage) => 
   await writeFile(
