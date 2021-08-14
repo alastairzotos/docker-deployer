@@ -5,7 +5,7 @@ import { appendToStorage, readStorage } from "./storage";
 import { pwdKey } from './core';
 
 export const authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-  const pwdHash = readStorage()[pwdKey];
+  const pwdHash = (await readStorage())[pwdKey];
   const headers = req.headers;
 
   if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {
@@ -22,7 +22,7 @@ export const authenticate = async (req: express.Request, res: express.Response, 
 }
 
 export const setupPassword = async () => {
-  const storage = readStorage();
+  const storage = await readStorage();
 
   if (!storage[pwdKey]) {
     console.log('Enter a password for this server');

@@ -4,7 +4,7 @@ import { handleStart, handleStop, handleReset } from "./commands";
 import { createStorage } from "./storage";
 
 export const handleCommand = async () => {
-  createStorage();
+  await createStorage();
   
   const commands: Commands = {
     start: handleStart,
@@ -15,7 +15,7 @@ export const handleCommand = async () => {
   const [cmd, ...args] = process.argv.slice(2)
 
   if (commands[cmd]) {
-    commands[cmd](...args);
+    await commands[cmd](...args);
   } else {
     console.error(`Unrecognised command '${cmd}'`);
     process.exit(1);

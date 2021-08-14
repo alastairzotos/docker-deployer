@@ -19,10 +19,10 @@ const handleDeploy = async (
   return logs.join('\n');
 }
 
-export const startServer = () => {
+export const startServer = async () => {
   const port = 4042;
 
-  createStorage();
+  await createStorage();
   const app = express();
 
   app.use(express.json());

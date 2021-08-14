@@ -7,7 +7,7 @@ export const handleReset = async () => {
     try {
       await handleStop();
     } catch {}
-    
-    deleteStorage();
+
+    await deleteStorage();
   }
 };

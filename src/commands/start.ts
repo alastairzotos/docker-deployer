@@ -14,7 +14,7 @@ export const handleStart = async () => {
     pm2.start(
       {
         script: `${__dirname}/../server.js`,
-        name: processName
+        name: processName,
       },
       error => {
         if (error) {

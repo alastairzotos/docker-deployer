@@ -1,8 +1,16 @@
 import * as path from 'path';
 import * as fs from 'fs';
+import { promisify } from 'util';
 
 const storagePath = path.resolve(__dirname, 'storage');
 const storageFilePath = path.resolve(storagePath, '.data');
+
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const exists = promisify(fs.exists);
+const mkdir = promisify(fs.mkdir);
+const rm = promisify(fs.rm);
+const rmdir = promisify(fs.rmdir);
 
 export type Storage = { [key: string]: string };
 
@@ -25,28 +33,28 @@ const stringToObject = (str: string): Storage =>
     }), {})
 
 
-export const createStorage = () => {
-  if (!fs.existsSync(storagePath)) {
-    fs.mkdirSync(storagePath);
+export const createStorage = async () => {
+  if (!(await exists(storagePath))) {
+    await mkdir(storagePath);
   }
 
-  if (!fs.existsSync(storageFilePath)) {
-    fs.writeFileSync(storageFilePath, '');
-  }
-}
-
-export const deleteStorage = () => {
-  if (fs.existsSync(storageFilePath)) {
-    fs.rmSync(storageFilePath);
-  }
-
-  if (fs.existsSync(storagePath)) {
-    fs.rmdirSync(storagePath);
+  if (!(await exists(storageFilePath))) {
+    await writeFile(storageFilePath, '');
   }
 }
 
-export const readStorage = (): Storage => {
-  const data = fs.readFileSync(storageFilePath).toString();
+export const deleteStorage = async () => {
+  if (await exists(storageFilePath)) {
+    await rm(storageFilePath);
+  }
+
+  if (await exists(storagePath)) {
+    await rmdir(storagePath);
+  }
+}
+
+export const readStorage = async (): Promise<Storage> => {
+  const data = (await readFile(storageFilePath)).toString();
 
   if (data.length === 0) {
     return {};
@@ -55,8 +63,8 @@ export const readStorage = (): Storage => {
   return stringToObject(data.toString());
 }
 
-export const appendToStorage = (data: Storage) => 
-  fs.writeFileSync(
+export const appendToStorage = async (data: Storage) => 
+  await writeFile(
     storageFilePath,
-    objectToString({ ...readStorage(), ...data })
+    objectToString({ ...(await readStorage()), ...data })
   );
