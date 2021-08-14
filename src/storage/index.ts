@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import { promisify } from 'util';
 
 const storagePath = path.resolve(__dirname, '..', '_storage');
-const storageFilePath = path.resolve(storagePath, '.data');
+const storageFilePath = path.resolve(storagePath, 'data.json');
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -14,32 +14,13 @@ const rmdir = promisify(fs.rmdir);
 
 export type Storage = { [key: string]: string };
 
-const objectToString = (data: Storage): string =>
-  Object.keys(data)
-    .reduce((items, key) => (
-      [...items, `${key}=${data[key]}`]
-    ), [] as string[])
-    .filter(line => line.length > 0)
-    .join('\n');
-
-const stringToObject = (str: string): Storage =>
-  str
-    .split('\n')
-    .filter(line => line.trim().length > 0)
-    .map(line => line.split('='))
-    .reduce((acc, item) => ({
-      ...acc,
-      [item[0]]: item[1]
-    }), {})
-
-
 export const createStorage = async () => {
   if (!(await exists(storagePath))) {
     await mkdir(storagePath);
   }
 
   if (!(await exists(storageFilePath))) {
-    await writeFile(storageFilePath, '');
+    await writeFile(storageFilePath, '{}');
   }
 }
 
@@ -54,10 +35,10 @@ export const deleteStorage = async () => {
 }
 
 export const readStorage = async (): Promise<Storage> =>
-  stringToObject((await readFile(storageFilePath)).toString());
+  JSON.parse((await readFile(storageFilePath)).toString());
 
-export const appendToStorage = async (data: Storage) => 
-  await writeFile(
-    storageFilePath,
-    objectToString({ ...(await readStorage()), ...data })
-  );
+export const writeStorage = async (data: Storage) =>
+  await writeFile(storageFilePath, JSON.stringify(data, null, 2))
+
+export const appendStorage = async (data: Storage) => 
+  await writeStorage({ ...(await readStorage()), ...data})

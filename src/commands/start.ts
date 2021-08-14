@@ -1,7 +1,7 @@
 import * as pm2 from 'pm2';
 import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
-import { appendToStorage, readStorage } from '../storage';
+import { appendStorage, readStorage } from '../storage';
 import { cliName, processName, pwdKey } from "../core";
 
 export const setupPassword = async () => {
@@ -20,10 +20,9 @@ export const setupPassword = async () => {
       password2 = readline.question('Confirm password: ', { hideEchoBack: true });
     }
 
-    await appendToStorage({ [pwdKey]: await bcrypt.hash(password1, await bcrypt.genSalt(10)) });
+    await appendStorage({ [pwdKey]: await bcrypt.hash(password1, await bcrypt.genSalt(10)) });
   }
 }
-
 
 export const handleStart = async () => {
   await setupPassword();
