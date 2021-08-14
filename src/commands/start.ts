@@ -1,11 +1,9 @@
 import * as pm2 from 'pm2';
 import { cliName, processName } from "../core";
-import { setupApiKey } from "../security";
-import { readStorage } from "../storage";
+import { setupPassword } from "../security";
 
 export const handleStart = async () => {
-  const storage = readStorage();
-  await setupApiKey(storage);
+  await setupPassword();
 
   pm2.connect(error => {
     if (error) {
