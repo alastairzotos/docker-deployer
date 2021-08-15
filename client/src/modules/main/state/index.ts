@@ -1,11 +1,12 @@
 import create from 'zustand';
-import { Log, WsMessage } from '../../common/models';
+import { ContainerStatuses, Log, WsMessage } from '../../common/models';
 import { ConnectionState } from '../models';
 
 export interface AppStateValues {
   connectionState: ConnectionState | null;
   ws: WebSocket | null;
   logs: Log[];
+  containers: ContainerStatuses;
 }
 
 export interface AppStateActions {
@@ -17,7 +18,8 @@ export type AppState = AppStateValues & AppStateActions;
 const initialState: AppStateValues = {
   connectionState: null,
   ws: null,
-  logs: []
+  logs: [],
+  containers: {}
 };
 
 export const useAppState = create<AppState>((set, get) => ({
@@ -47,6 +49,9 @@ export const useAppState = create<AppState>((set, get) => ({
           set({ logs: [...get().logs, { ...data.log!, date: new Date(data.log?.date as any as string) } ]});
           break;
 
+        case 'containers':
+          set({ containers: data.containerStatus! });
+          break;
       }
     }
   }

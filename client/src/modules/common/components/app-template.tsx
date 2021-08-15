@@ -1,7 +1,8 @@
-import { Layout, Space } from 'antd';
+import { Layout, Space, Typography } from 'antd';
 import React from 'react';
 
 const { Header } = Layout;
+const { Title } = Typography;
 
 export const AppTemplate: React.FC = ({ children }) => {
   return (
@@ -13,6 +14,8 @@ export const AppTemplate: React.FC = ({ children }) => {
             style={{ width: 50, height: 50 }}
             alt="BitMetro Logo"
           />
+
+          <Title level={3} style={{ paddingTop: 16 }}>Container Manager</Title>
         </Space>
       </Header>
 

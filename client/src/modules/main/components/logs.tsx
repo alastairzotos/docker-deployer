@@ -14,7 +14,6 @@ export const Logs: React.FC = () => {
   }, [connectToWs]);
 
   React.useEffect(() => {
-    console.log('foo');
     if (ref.current) {
       ref.current.scrollTo({ top: ref.current.scrollHeight, behavior: 'smooth' });
     }
@@ -25,7 +24,7 @@ export const Logs: React.FC = () => {
       title="Logs"
       className={styles.logs}
       bodyStyle={{
-        // backgroundColor: 'black',
+        backgroundColor: 'black',
         height: 'calc(100% - 47px)',
         width: '100%',
         padding: 0,

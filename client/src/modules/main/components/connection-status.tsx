@@ -18,9 +18,12 @@ export const ConnectionStatus: React.FC = () => {
   const connectionState = useAppState(state => state.connectionState);
 
   return (
-    <samp>
+    <span>
       {connectionState === 'connected' && <span className={styles.online} />}
-      {getConnectionStatePrompt(connectionState)}
-    </samp>
+
+      <span>
+        {getConnectionStatePrompt(connectionState)}
+      </span>
+    </span>
   )
 };
