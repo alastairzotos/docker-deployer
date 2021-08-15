@@ -70,7 +70,7 @@ export const startServer = async () => {
       tag,
       name,
       ports,
-      (line: string) => {
+      line => {
         logs.push(line);
         console.log(line);
       }
