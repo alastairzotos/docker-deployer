@@ -30,6 +30,7 @@
     "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "keypair": "^1.0.3",
+    "node-docker-api": "^1.1.22",
     "pm2": "^5.1.0",
     "readline-sync": "^1.4.10"
   },
