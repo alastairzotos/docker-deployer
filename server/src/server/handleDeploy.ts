@@ -1,8 +1,11 @@
 import { Docker } from 'node-docker-api';
+import * as WebSocket from 'ws';
+import { handleBroadcastStatus } from './broadcastStatus';
 import { promisifyStream } from './utils';
 
 export const handleDeploy = async (
   docker: Docker,
+  wss: WebSocket.Server,
   image: string,
   tag: string,
   name: string,
@@ -19,7 +22,9 @@ export const handleDeploy = async (
     if (!!existingContainer) {
       log('Removing existing container...');
       await existingContainer.stop();
+      await handleBroadcastStatus(docker, wss);
       await existingContainer.delete();
+      await handleBroadcastStatus(docker, wss);
     }
 
     const [outPort, inPort] = ports.split(':');
@@ -36,7 +41,9 @@ export const handleDeploy = async (
       }
     });
 
+    await handleBroadcastStatus(docker, wss);
     await container.start();
+    await handleBroadcastStatus(docker, wss);
 
     log('Success');
   } catch (e) {

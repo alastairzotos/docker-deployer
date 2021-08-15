@@ -6,6 +6,7 @@ import { createStorage } from '../storage';
 import { authenticate } from './auth';
 import { handleDeploy } from './handleDeploy'; 
 import { sendMessage } from './messaging';
+import { broadcastStatus } from './broadcastStatus';
 
 export const startServer = async () => {
   const port = 4042;
@@ -14,11 +15,12 @@ export const startServer = async () => {
 
   await createStorage();
   const app = express();
+  app.use(express.json());
 
   const wsHttpServer = http.createServer(app);
   const wss = new WebSocket.Server({ server: wsHttpServer });
 
-  app.use(express.json());
+  broadcastStatus(docker, wss);
 
   app.post('/deploy', authenticate, async (req, res) => {
     const { image, tag = 'latest', name, ports } = req.body;
@@ -26,6 +28,7 @@ export const startServer = async () => {
     const logs = [];
     await handleDeploy(
       docker,
+      wss,
       image,
       tag,
       name,
