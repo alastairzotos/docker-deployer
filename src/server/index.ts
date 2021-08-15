@@ -1,15 +1,18 @@
 import * as express from 'express';
 import { Docker } from 'node-docker-api';
+import * as http from 'http';
+import * as WebSocket from 'ws';
 import { createStorage } from '../storage';
 import { authenticate } from './auth';
 
 const docker = new Docker({ socketPath: '/var/run/docker.sock' });
 
-const promisifyStream = (stream) => new Promise((resolve, reject) => {
-  stream.on('data', (d) => console.log(d.toString()))
-  stream.on('end', resolve)
-  stream.on('error', reject)
-})
+const promisifyStream = (stream: any, log: (data: string) => void) =>
+  new Promise((resolve, reject) => {
+    stream.on('data', (d) => log(d.toString()))
+    stream.on('end', resolve)
+    stream.on('error', reject)
+  });
 
 const handleDeploy = async (
   image: string,
@@ -20,7 +23,7 @@ const handleDeploy = async (
 ) => {
   try {
     log('Pulling image...');
-    await docker.image.create({}, { fromImage: image, tag })//.then(stream => promisifyStream(stream));
+    await docker.image.create({}, { fromImage: image, tag }).then(stream => promisifyStream(stream, log));
 
     const containers = await docker.container.list();
     const existingContainer = containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
@@ -55,9 +58,20 @@ const handleDeploy = async (
 
 export const startServer = async () => {
   const port = 4042;
+  const wsPort = 4043;
 
   await createStorage();
   const app = express();
+
+  const wsHttpServer = http.createServer(app);
+  const wss = new WebSocket.Server({ server: wsHttpServer });
+
+  let websocket: WebSocket;
+  wss.on('connection', (ws: WebSocket) => {
+    if (!websocket) {
+      websocket = ws;
+    }
+  })
 
   app.use(express.json());
 
@@ -72,6 +86,11 @@ export const startServer = async () => {
       ports,
       line => {
         logs.push(line);
+        
+        if (websocket) {
+          websocket.send(line);
+        }
+
         console.log(line);
       }
     );
@@ -79,7 +98,8 @@ export const startServer = async () => {
     res.json({ response: logs });
   })
 
-  app.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+  wsHttpServer.listen(wsPort, () => console.log(`Websocket server listening on ws://localhost:${wsPort}`))
+  app.listen(port, () => console.log(`App server listening on http://localhost:${port}`));
 };
 
 startServer();
