@@ -39,8 +39,5 @@
   },
   "bin": {
     "mctrl": "server/dist/index.js"
-  },
-  "files": [
-    "client/build/**"
-  ]
+  }
 }
