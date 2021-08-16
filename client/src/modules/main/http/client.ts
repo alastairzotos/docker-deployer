@@ -5,7 +5,7 @@ class HttpClient {
   private readonly baseUrl = 'http://localhost:4042';
 
   constructor() {}
-
+  
   async login(password: string): Promise<void> {
     const response = await axios.post(`${this.baseUrl}/login`, {
       password,

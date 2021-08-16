@@ -28,7 +28,8 @@ export const authenticate = async (req: express.Request, res: express.Response, 
     const secret = (await readStorage())[secretKey];
 
     try {
-      if (!jwt.verify(token, secret)) {
+      const decoded = jwt.verify(token, secret);
+      if (!(await verifyPassword(decoded))) {
         return res.status(401).send('Unauthorized');
       }
     } catch {
