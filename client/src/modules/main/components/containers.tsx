@@ -4,7 +4,6 @@ import { PlusOutlined, SelectOutlined } from '@ant-design/icons';
 import styles from './containers.module.css';
 import connectionStyles from './connection-status.module.css';
 import { useAppState } from '../state';
-import { formatDateTime } from '../../common/utils';
 
 export const Containers: React.FC = () => {
   const containers = useAppState(state => state.containers);
@@ -15,8 +14,9 @@ export const Containers: React.FC = () => {
       className={styles.containers}
       bodyStyle={{
         padding: 0,
-        height: '100%',
+        height: 'calc(100% - 47px)',
         // backgroundColor: 'black',
+
       }}
       extra={
         <Button type="default" size="small">

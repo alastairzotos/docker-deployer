@@ -2,7 +2,8 @@ import * as pm2 from 'pm2';
 import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
 import { appendStorage, readStorage } from '../storage';
-import { cliName, processName, pwdKey } from "../core";
+import { cliName, serverProcessName, pwdKey, clientProcessName } from "../core";
+import { clientPath, serverPath } from '../root';
 
 export const setupPassword = async () => {
   const storage = await readStorage();
@@ -24,29 +25,54 @@ export const setupPassword = async () => {
   }
 }
 
+const startScript = (script: string, name: string): Promise<void> =>
+  new Promise((resolve, reject) => {
+    pm2.start({ script, name }, error => {
+      if (error) {
+        return reject(error.message);
+      }
+      
+      resolve();
+    })
+  })
+
 export const handleStart = async () => {
   await setupPassword();
 
-  pm2.connect(error => {
-    if (error) {
-      console.error(error.message);
-      process.exit(1);
-    }
-
-    pm2.start(
-      {
-        script: `${__dirname}/../server/index.js`,
-        name: processName,
-      },
-      error => {
-        if (error) {
-          console.error(error.message);
-          process.exit(1);
-        }
-
-        console.log(`Deployment server started. Run '${cliName} stop' to stop`);
-        pm2.disconnect();
+  try {
+    pm2.connect(async error => {
+      if (error) {
+        console.error(error.message);
+        process.exit(1);
       }
-    )
-  })
+
+      console.log(clientPath);
+      await startScript(serverPath, serverProcessName);
+      console.log(`Deployment server started. Run '${cliName} stop' to stop`);
+
+      await startScript(clientPath, clientProcessName);
+      console.log(`Client UI running on http://localhost:4044`);
+
+      pm2.disconnect();
+
+      // pm2.start(
+      //   {
+      //     script: serverPath,
+      //     name: serverProcessName,
+      //   },
+      //   error => {
+      //     if (error) {
+      //       console.error(error.message);
+      //       process.exit(1);
+      //     }
+
+      //     console.log(`Deployment server started. Run '${cliName} stop' to stop`);
+      //     pm2.disconnect();
+      //   }
+      // )
+    })
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 }

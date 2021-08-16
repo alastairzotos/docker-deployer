@@ -1,6 +1,6 @@
 {
-  "name": "@bitmetro/docker-deployer",
-  "version": "1.2.1",
+  "name": "mctrl-server",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -37,8 +37,5 @@
     "pm2": "^5.1.0",
     "readline-sync": "^1.4.10",
     "ws": "^8.1.0"
-  },
-  "bin": {
-    "ddeploy": "dist/index.js"
   }
 }

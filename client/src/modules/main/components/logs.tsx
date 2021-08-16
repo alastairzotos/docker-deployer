@@ -33,9 +33,10 @@ export const Logs: React.FC = () => {
       <div
         style={{
           height: '100%',
-          width: '100%',
+          maxWidth: '100%',
           whiteSpace: 'nowrap',
-          overflow: 'scroll',
+          overflowX: 'scroll',
+          overflowY: 'scroll'
         }}
 
         ref={ref}

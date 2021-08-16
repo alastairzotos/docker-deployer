@@ -15,7 +15,7 @@ export const AppTemplate: React.FC = ({ children }) => {
             alt="BitMetro Logo"
           />
 
-          <Title level={3} style={{ paddingTop: 16 }}>Container Manager</Title>
+          <Title level={3} style={{ paddingTop: 16 }}>Mission Control</Title>
         </Space>
       </Header>
 

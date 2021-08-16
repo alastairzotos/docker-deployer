@@ -3,7 +3,7 @@
   font-size: 12px;
   color: #04c904;
   padding-right: 10px;
-  animation: blinker 3s ease-in-out infinite;
+  /* animation: blinker 3s ease-in-out infinite; */
 }
 
 @keyframes blinker {
