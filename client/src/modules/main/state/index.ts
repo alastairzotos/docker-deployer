@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { message } from 'antd';
 import { ContainerStatuses, Log, WsMessage } from '../../common/models';
 import { httpClient } from '../http/client';
 import { CallStatus, ConnectionState } from '../models';
@@ -44,6 +45,7 @@ export const useAppState = create<AppState>((set, get) => ({
       });
 
       localStorage.setItem(authTokenKey, jwt!);
+      message.success('Access granted');
       await httpClient.triggerBroadcast();
     } catch (e) {
       set({ loginStatus: 'error' });
