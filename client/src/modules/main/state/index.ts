@@ -1,16 +1,22 @@
 import create from 'zustand';
 import { ContainerStatuses, Log, WsMessage } from '../../common/models';
-import { ConnectionState } from '../models';
+import { httpClient } from '../http/client';
+import { CallStatus, ConnectionState } from '../models';
+
+const authTokenKey = 'mctrl-auth-token';
 
 export interface AppStateValues {
   connectionState: ConnectionState | null;
   ws: WebSocket | null;
   logs: Log[];
   containers: ContainerStatuses;
+  authToken: string | null;
+  loginStatus: CallStatus | null;
 }
 
 export interface AppStateActions {
   connectToWss: () => void;
+  login: (password: string) => void;
 }
 
 export type AppState = AppStateValues & AppStateActions;
@@ -19,11 +25,29 @@ const initialState: AppStateValues = {
   connectionState: null,
   ws: null,
   logs: [],
-  containers: {}
+  containers: {},
+  authToken: localStorage.getItem(authTokenKey) || null,
+  loginStatus: null
 };
 
 export const useAppState = create<AppState>((set, get) => ({
   ...initialState,
+
+  login: async password => {
+    set({ loginStatus: 'fetching' });
+
+    try {
+      const jwt = await httpClient.login(password);
+      set({
+        loginStatus: 'success',
+        authToken: jwt!
+      });
+
+      localStorage.setItem(authTokenKey, jwt!);
+    } catch (e) {
+      set({ loginStatus: 'error' });
+    }
+  },
 
   connectToWss: () => {
     const ws = new WebSocket('ws://localhost:4043');

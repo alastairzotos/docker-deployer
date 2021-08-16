@@ -1,10 +1,20 @@
 #!/usr/bin/env node
-import { Commands } from "./core";
+import { v4 as uuidv4 } from 'uuid';
+import { Commands, secretKey } from "./core";
 import { handleStart, handleStop, handleReset } from "./commands";
-import { createStorage } from "./storage";
+import { appendStorage, createStorage, readStorage } from "./storage";
+
+const createSecret = async () => {
+  const storage = await readStorage();
+
+  if (!storage[secretKey]) {
+    await appendStorage({ [secretKey]: uuidv4() });
+  }
+}
 
 export const handleCommand = async () => {
   await createStorage();
+  await createSecret();
   
   const commands: Commands = {
     start: handleStart,

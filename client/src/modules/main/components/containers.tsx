@@ -34,7 +34,7 @@ export const Containers: React.FC = () => {
           {
             title: 'Status',
             dataIndex: 'status',
-            key: 'status',
+            key: 'name',
             render: (data: string) => (
               <>
                 {data === 'running' && <span className={connectionStyles.online} />}
@@ -45,12 +45,12 @@ export const Containers: React.FC = () => {
           {
             title: 'Started',
             dataIndex: 'startedAt',
-            key: 'startedAt',
+            key: 'name',
           },
           {
             title: 'Process ID',
             dataIndex: 'pid',
-            key: 'pid'
+            key: 'name'
           },
           {
             title: 'Port',

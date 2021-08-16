@@ -12,7 +12,7 @@ const { Text } = Typography;
 export const LogItem: React.FC<Props> = ({ log }) => {
   return (
     <span>
-      <samp>[<Text type="success">{formatTime(log.date)}</Text>] </samp>
+      <samp>[<Text type="secondary">{formatTime(log.date)}</Text>] </samp>
       <samp><strong>{log.container}</strong>: </samp>
       <span><Text code>{log.message}</Text></span>
       <br />
