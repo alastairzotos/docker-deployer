@@ -5,7 +5,7 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import { createStorage } from '../storage';
 import { authenticate, login } from './auth';
-import { broadcastStatus } from './broadcastStatus';
+import { broadcastStatus, handleBroadcastStatus } from './broadcastStatus';
 import { deploy } from './deploy';
 
 export const startServer = async () => {
@@ -23,8 +23,12 @@ export const startServer = async () => {
 
   broadcastStatus(docker, wss);
 
-  app.post('/login', login);
+  app.post('/login', login(docker, wss));
   app.post('/deploy', authenticate, deploy(docker, wss));
+  app.post('/trigger-broadcast', authenticate, async (req, res) => {
+    await handleBroadcastStatus(docker, wss);
+    res.sendStatus(201);
+  });
 
   wsHttpServer.listen(wsPort, () => console.log(`Websocket server listening on ws://localhost:${wsPort}`))
   app.listen(port, () => console.log(`App server listening on http://localhost:${port}`));

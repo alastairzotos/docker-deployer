@@ -26,7 +26,7 @@ const initialState: AppStateValues = {
   ws: null,
   logs: [],
   containers: {},
-  authToken: localStorage.getItem(authTokenKey) || null,
+  authToken: null, //localStorage.getItem(authTokenKey) || null,
   loginStatus: null
 };
 
@@ -44,6 +44,7 @@ export const useAppState = create<AppState>((set, get) => ({
       });
 
       localStorage.setItem(authTokenKey, jwt!);
+      await httpClient.triggerBroadcast();
     } catch (e) {
       set({ loginStatus: 'error' });
     }

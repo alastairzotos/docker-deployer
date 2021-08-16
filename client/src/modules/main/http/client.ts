@@ -13,6 +13,14 @@ class HttpClient {
 
     return response.data;
   }
+
+  async triggerBroadcast() {
+    await axios.post(`${this.baseUrl}/trigger-broadcast`, {}, {
+      headers: {
+        authorization: `Bearer ${useAppState.getState().authToken}`
+      }
+    });
+  }
 }
 
 export const httpClient = new HttpClient();
