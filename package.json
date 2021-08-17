@@ -36,7 +36,10 @@
     "pm2": "^5.1.0",
     "readline-sync": "^1.4.10",
     "serve": "^12.0.0",
-    "ws": "^8.1.0"
+    "ws": "^8.1.0",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^8.5.1",
+    "uuid": "^8.3.2"
   },
   "bin": {
     "mctrl": "server/dist/index.js"
