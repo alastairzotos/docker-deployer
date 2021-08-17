@@ -27,7 +27,7 @@ const initialState: AppStateValues = {
   ws: null,
   logs: [],
   containers: {},
-  authToken: null, //localStorage.getItem(authTokenKey) || null,
+  authToken: localStorage.getItem(authTokenKey) || null,
   loginStatus: null
 };
 
