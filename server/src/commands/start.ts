@@ -46,7 +46,7 @@ export const handleStart = async () => {
         process.exit(1);
       }
 
-      console.log(clientPath);
+      console.log(clientPath, serverPath);
       await startScript(serverPath, serverProcessName);
       console.log(`Deployment server started. Run '${cliName} stop' to stop`);
 
@@ -54,22 +54,6 @@ export const handleStart = async () => {
       console.log(`Client UI running on http://localhost:4044`);
 
       pm2.disconnect();
-
-      // pm2.start(
-      //   {
-      //     script: serverPath,
-      //     name: serverProcessName,
-      //   },
-      //   error => {
-      //     if (error) {
-      //       console.error(error.message);
-      //       process.exit(1);
-      //     }
-
-      //     console.log(`Deployment server started. Run '${cliName} stop' to stop`);
-      //     pm2.disconnect();
-      //   }
-      // )
     })
   } catch (e) {
     console.error(e);
