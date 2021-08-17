@@ -73,7 +73,35 @@ export const useAppState = create<AppState>((set, get) => ({
 
       switch (data.type) {
         case 'log':
-          set({ logs: [...get().logs, { ...data.log!, date: new Date(data.log?.date as any as string) } ]});
+          if (data.log?.progress) {
+            const foundLog = get().logs.find(log => log.progress && log.progress.id === data.log?.progress?.id);
+            if (foundLog) {
+              set({
+                logs: get().logs.map(log => (
+                  log.progress && log.progress.id === foundLog.progress?.id
+                  ? data.log!
+                  : log
+                ))
+              })
+            } else {
+              set({
+                logs: [
+                  ...get().logs,
+                  data.log!
+                ]
+              })
+            }
+          } else {
+            set({
+              logs: [
+                ...get().logs,
+                {
+                  ...data.log!,
+                  date: new Date(data.log?.date as any as string)
+                }
+              ]
+            });
+          }
           break;
 
         case 'containers':

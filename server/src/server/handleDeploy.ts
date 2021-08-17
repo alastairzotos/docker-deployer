@@ -11,10 +11,12 @@ export const handleDeploy = async (
   name: string,
   ports: string,
   log: (data: string) => void,
+  progress: (type: string, id: string, current: number, total: number) => void,
 ) => {
   try {
     log('Pulling image...');
-    await docker.image.create({}, { fromImage: image, tag }).then(stream => promisifyStream(stream, log));
+    await docker.image.create({}, { fromImage: image, tag })
+      .then(stream => promisifyStream(stream, log, progress));
 
     const containers = await docker.container.list();
     const existingContainer = containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);

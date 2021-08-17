@@ -14,9 +14,8 @@ export const Containers: React.FC = () => {
       className={styles.containers}
       bodyStyle={{
         padding: 0,
-        height: 'calc(100% - 47px)',
+        height: 'calc(100% - 90px)',
         // backgroundColor: 'black',
-
       }}
       extra={
         <Button type="default" size="small">

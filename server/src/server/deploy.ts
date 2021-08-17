@@ -27,7 +27,15 @@ export const deploy = (docker: Docker, wss: WebSocket.Server) =>
             message: line
           }
         })
-      }
+      },
+      (type, id, current, total) =>
+        sendMessage(wss, {
+          type: 'log',
+          log: {
+            container: name,
+            progress: { type, id, current, total }
+          }
+        })
     );
 
     res.json({ response: logs });

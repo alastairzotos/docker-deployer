@@ -1,4 +1,8 @@
-export const promisifyStream = (stream: any, log: (data: string) => void) =>
+export const promisifyStream = (
+  stream: any,
+  log: (data: string) => void,
+  progress: (type: string, id: string, current: number, total: number) => void
+) =>
   new Promise((resolve, reject) => {
     stream.on('data', data => {
       const strData = data.toString() as string;
@@ -13,7 +17,11 @@ export const promisifyStream = (stream: any, log: (data: string) => void) =>
           const json = JSON.parse(line);
           if (json) {
             if (json.status) {
-              log(json.status);
+              if (json.status === 'Downloading') {
+                progress('Downloading', json.progressDetail.id, json.progressDetail.current, json.progressDetail.total);
+              } else {
+                log(json.status);
+              }
             } else {
               log(line);
             }

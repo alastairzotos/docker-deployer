@@ -25,7 +25,7 @@ export const Logs: React.FC = () => {
       className={styles.logs}
       bodyStyle={{
         backgroundColor: 'black',
-        height: 'calc(100% - 47px)',
+        height: 'calc(100% - 90px)',
         width: '100%',
         padding: 0,
       }}
