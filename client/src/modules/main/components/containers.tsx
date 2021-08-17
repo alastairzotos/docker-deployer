@@ -61,7 +61,7 @@ export const Containers: React.FC = () => {
             dataIndex: 'port',
             key: 'name',
             render: (port: number) => (
-              <a target="_blank" href={`http://localhost:${port}`}>
+              <a target="_blank" href={`${window.location.protocol}//${window.location.hostname}:${port}`}>
                 View&nbsp;
                 <SelectOutlined rotate={90} />
               </a>

@@ -1,6 +1,7 @@
 import * as pm2 from 'pm2';
 import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
+import * as ip from 'ip';
 import { appendStorage, readStorage } from '../storage';
 import { cliName, serverProcessName, pwdKey, clientProcessName } from "../core";
 import { clientPath, serverPath } from '../root';
@@ -50,8 +51,8 @@ export const handleStart = async () => {
       console.log(`Deployment server started. Run '${cliName} stop' to stop`);
 
       await startScript(clientPath, clientProcessName);
-      console.log(`Client UI running on http://localhost:4044`);
-
+      
+      console.log(`Client UI running on http://${ip.address()}:4044`);
       pm2.disconnect();
     })
   } catch (e) {
