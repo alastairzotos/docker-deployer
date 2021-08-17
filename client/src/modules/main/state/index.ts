@@ -53,7 +53,7 @@ export const useAppState = create<AppState>((set, get) => ({
   },
 
   connectToWss: () => {
-    const ws = new WebSocket('ws://localhost:4043');
+    const ws = new WebSocket(`ws://${window.location.hostname}:4043`);
     set({
       connectionState: 'connecting',
       ws
