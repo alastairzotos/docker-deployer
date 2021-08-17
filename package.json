@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server/dist/index.js",
     "start:ui": "cd client && npm start",
-    "prepublishOnly_": "cd client && npm run build"
+    "prepublishOnly": "cd client && npm run build"
   },
   "repository": {
     "type": "git",

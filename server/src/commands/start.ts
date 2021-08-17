@@ -46,7 +46,6 @@ export const handleStart = async () => {
         process.exit(1);
       }
 
-      console.log(clientPath, serverPath);
       await startScript(serverPath, serverProcessName);
       console.log(`Deployment server started. Run '${cliName} stop' to stop`);
 
