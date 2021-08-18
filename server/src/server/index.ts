@@ -5,13 +5,13 @@ import * as http from 'http';
 import * as WebSocket from 'ws';
 import { AuthMiddleware } from './middleware/auth';
 import { MainController } from './controllers/main.controller';
-import { MainService } from './services/main.service';
-import { AuthService } from './services/auth.service';
-import { AuthController } from './controllers/auth.controller';
-import { MessagingService } from './services/messaging.service';
-import { DockerService } from './services/docker.service';
-import { LogService } from './services/log.service';
 import { coreService } from '../core';
+import { MessagingService } from './modules/messaging/messaging.service';
+import { LogService } from './modules/log/log.service';
+import { DockerService } from './modules/docker/docker.service';
+import { MainService } from './modules/main/main.service';
+import { AuthService } from './modules/auth/auth.service';
+import { AuthController } from './controllers/auth.controller';
 
 export const startServer = async () => {
   const port = 4042;
