@@ -47,11 +47,33 @@ export class DockerService {
     return containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
   }
 
+  getContainerLogs = async (id: string): Promise<string[]> => {
+    const container = await this.docker.container.get(id);
+
+    if (container) {
+
+      const logsStream = await container.logs({
+        follow: true,
+        stdout: true,
+        stderr: true
+      }) as any as Readable;
+
+      const logs = await this.promisifyLogsStream(logsStream);
+
+      console.log(logs);
+
+      // Horrible way to remove hex codes. Regex doesn't seem to work here
+      return logs.map(log => log.split('').filter(chr => chr.charCodeAt(0) >= 32).join(''));
+    }
+
+    return null;
+  }
+
   getContainerStats = async (id: string): Promise<ContainerStats | null> => {
     const container = await this.docker.container.get(id);
 
     if (container) {
-      const statsStream = await container.stats({}) as any as Readable;
+      const statsStream = await container.stats() as any as Readable;
       const stats = await this.promisifyStatsStream(statsStream);
 
       const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
@@ -87,6 +109,13 @@ export class DockerService {
       startedAt: this.timeService.format(new Date(status.data['State'].StartedAt))
     }
   }
+
+  private promisifyLogsStream = (stream: Readable): Promise<string[]> =>
+    new Promise(resolve => {
+      stream.on('data', (data: Buffer) => {
+        resolve(data.toString().split('\n'));
+      })
+    })
 
   private promisifyStatsStream = (stream: Readable): Promise<any> =>
     new Promise(resolve => {

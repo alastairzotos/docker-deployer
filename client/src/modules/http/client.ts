@@ -32,6 +32,16 @@ class HttpClient {
 
     return stats.data;
   }
+
+  async getContainerLogs(id: string) {
+    const logs = await axios.get<string[]>(`${this.baseUrl}/get-logs?id=${id}`, {
+      headers: {
+        authorization: `Bearer ${useAuthState.getState().authToken}`
+      }
+    })
+
+    return logs.data;
+  }
 }
 
 export const httpClient = new HttpClient();

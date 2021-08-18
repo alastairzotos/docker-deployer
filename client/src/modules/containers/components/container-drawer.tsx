@@ -12,6 +12,7 @@ import { useContainersState } from '../state';
 import { LogsView } from '../../atomic/logs/logs-view';
 import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 import { capitalise } from '../../common/utils';
+import { LogsContainer } from '../../atomic/logs/logs-container';
 
 const { Title, Text } = Typography;
 
@@ -33,14 +34,20 @@ export const ContainerDrawer: React.FC = () => {
   const containers = useContainersState(state => state.containers);
   const selectedId = useContainersState(state => state.selectedId);
   const selectContainer = useContainersState(state => state.selectContainer);
-  const fetchStatus = useContainersState(state => state.containerStatsFetchStatus);
+
+  const statsFetchStatus = useContainersState(state => state.containerStatsFetchStatus);
   const stats = useContainersState(state => state.selectedContainerStats);
   const getStats = useContainersState(state => state.getContainerStats);
+
+  const logsFetchStatus = useContainersState(state => state.containerLogsFetchStatus);
+  const logs = useContainersState(state => state.selectedContainerLogs);
+  const getLogs = useContainersState(state => state.getContainerLogs);
 
   const selectedContainer = !!selectedId ? containers[selectedId] : null;
 
   React.useEffect(() => {
     getStats();
+    getLogs();
   }, [selectedId]);
 
   const fullHeight: React.CSSProperties = { height: '100%' };
@@ -52,7 +59,7 @@ export const ContainerDrawer: React.FC = () => {
       placement="bottom"
       closable={true}
       onClose={() => selectContainer(null)}
-      height="300px"
+      height="350px"
       bodyStyle={{ padding: 0 }}
       mask={false}
     >
@@ -60,7 +67,7 @@ export const ContainerDrawer: React.FC = () => {
         <>
           <Row style={fullHeight}>
             <Col span={14}>
-              {fetchStatus === 'fetching' && (
+              {statsFetchStatus === 'fetching' && (
                 <div
                   style={{
                     textAlign: 'center',
@@ -71,11 +78,11 @@ export const ContainerDrawer: React.FC = () => {
                 </div>
               )}
 
-              {fetchStatus === 'error' && (
+              {statsFetchStatus === 'error' && (
                 <Text type="danger">There was a problem getting container stats</Text>
               )}
 
-              {fetchStatus === 'success' && !!stats && (
+              {statsFetchStatus === 'success' && !!stats && (
 
                 <div style={{ padding: 24 }}>
                   <Row>
@@ -109,7 +116,24 @@ export const ContainerDrawer: React.FC = () => {
             </Col>
 
             <Col span={10}>
-              <LogsView logs={[]} />
+              <LogsContainer heightOffset={58}>
+                {logsFetchStatus === 'fetching' && (
+                  <Text type="secondary">Fetching...</Text>
+                )}
+
+                {logsFetchStatus === 'error' && (
+                  <Text type="danger">There was an error fetching the logs</Text>
+                )}
+
+                {logsFetchStatus === 'success' && !!logs && (
+                  logs.map((log, index) => (
+                    <React.Fragment key={index}>
+                      <Text type="success" key={index}>{log}</Text>
+                      <br />
+                    </React.Fragment>
+                  ))
+                )}
+              </LogsContainer>
             </Col>
           </Row>
         </>
