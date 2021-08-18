@@ -1,17 +1,19 @@
 import { Card } from 'antd';
 import * as React from 'react';
 import styles from './logs.module.css';
-import { useAppState } from '../state';
 import { LogItem } from './log';
+import { Log } from '../models';
 
-export const Logs: React.FC = () => {
-  const logs = useAppState(state => state.logs);
-  const connectToWs = useAppState(state => state.connectToWss);
+interface Props {
+  title?: string;
+  logs: Log[];
+}
+
+export const LogsView: React.FC<Props> = ({
+  title = "Logs",
+  logs
+}) => {
   const ref = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    connectToWs();
-  }, [connectToWs]);
 
   React.useEffect(() => {
     if (ref.current) {
@@ -21,7 +23,7 @@ export const Logs: React.FC = () => {
 
   return (
     <Card
-      title="Logs"
+      title={title}
       className={styles.logs}
       bodyStyle={{
         backgroundColor: 'black',
