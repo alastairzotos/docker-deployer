@@ -114,7 +114,7 @@ export const ContainerDrawer: React.FC = () => {
               )}
             </Col>
 
-            <Col span={10}>
+            <Col span={10} style={{ height: '100%' }}>
               <LogsContainer heightOffset={58}>
                 {logsFetchStatus === 'fetching' && (
                   <Text type="secondary">Fetching...</Text>
