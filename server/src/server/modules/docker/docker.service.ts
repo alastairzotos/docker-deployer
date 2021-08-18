@@ -2,14 +2,14 @@ import { Stream } from 'stream';
 import { Docker } from 'node-docker-api';
 import { MessagingService } from '../messaging/messaging.service';
 import { Container } from 'node-docker-api/lib/container';
-import { ContainerStatus } from '../../models';
+import { ContainerStatus, DeploymentInfo } from '../../models';
 import TimeAgo from 'javascript-time-ago';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
 
 @Service()
 export class DockerService {
-  readonly docker: Docker;
+  private readonly docker: Docker;
 
   constructor(
     private messagingService: MessagingService,
@@ -18,25 +18,17 @@ export class DockerService {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
   }
 
-  pullImage = async (
-    containerName: string,
-    image: string,
-    tag: string
-  ) =>
+  pullImage = async (containerName: string, image: string, tag: string) =>
     await this.docker.image.create({}, { fromImage: image, tag })
       .then(stream => this.promisifyStream(stream as any as Stream, containerName));
 
   listContainers = async (all = false) =>
     await this.docker.container.list({ all });
 
-  createContainer = async (
-    name: string,
-    image: string,
-    tag: string,
-    inPort: string,
-    outPort: string
-  ) =>
-    await this.docker.container.create({
+  createContainer = async ({ name, image, tag, ports }: DeploymentInfo) => {
+    const [outPort, inPort] = ports.split(':');
+
+    return await this.docker.container.create({
       Image: image + ':' + tag,
       name,
       PortBindings: {
@@ -46,6 +38,7 @@ export class DockerService {
         [`${inPort}/tcp`]: {}
       }
     });
+  }
 
   toContainerStatus = async (container: Container, timeAgo: TimeAgo): Promise<ContainerStatus> => {
     const status = await container.status();

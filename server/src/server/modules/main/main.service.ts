@@ -19,7 +19,9 @@ export class MainService {
     this.timeAgo = new TimeAgo('es-US');
   }
 
-  handleDeploy = async ({ image, name, ports, tag }: DeploymentInfo) => {
+  handleDeploy = async (deploymentInfo: DeploymentInfo) => {
+    const { image, name, ports, tag } = deploymentInfo;
+
     try {
       this.logService.log(name, 'Pulling image...');
       await this.dockerService.pullImage(name, image, tag);
@@ -36,10 +38,8 @@ export class MainService {
         await this.broadcastStatus();
       }
 
-      const [outPort, inPort] = ports.split(':');
-
       this.logService.log(name, 'Starting new container...');
-      const container = await this.dockerService.createContainer(name, image, tag, inPort, outPort);
+      const container = await this.dockerService.createContainer(deploymentInfo);
 
       await this.broadcastStatus();
       await container.start();
