@@ -6,6 +6,7 @@ import { ContainerStatus, DeploymentInfo } from '../../models';
 import TimeAgo from 'javascript-time-ago';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
+import { TimeService } from '../time/time.service';
 
 @Service()
 export class DockerService {
@@ -13,7 +14,8 @@ export class DockerService {
 
   constructor(
     private messagingService: MessagingService,
-    private logService: LogService
+    private logService: LogService,
+    private timeService: TimeService,
   ) {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
   }
@@ -40,7 +42,7 @@ export class DockerService {
     });
   }
 
-  toContainerStatus = async (container: Container, timeAgo: TimeAgo): Promise<ContainerStatus> => {
+  toContainerStatus = async (container: Container): Promise<ContainerStatus> => {
     const status = await container.status();
 
     return {
@@ -49,7 +51,7 @@ export class DockerService {
       pid: status.data['State'].Pid,
       port: container.data['Ports'].length ? container.data['Ports'][0]['PublicPort'] : -1,
       status: status.data['State'].Status,
-      startedAt: timeAgo.format(new Date(status.data['State'].StartedAt).getTime())
+      startedAt: this.timeService.format(new Date(status.data['State'].StartedAt))
     }
   }
 

@@ -1,5 +1,3 @@
-import TimeAgo from 'javascript-time-ago';
-import * as en from 'javascript-time-ago/locale/en'
 import { ContainerStatuses, DeploymentInfo } from '../../models';
 import { MessagingService } from '../messaging/messaging.service';
 import { DockerService } from '../docker/docker.service';
@@ -8,19 +6,14 @@ import { Service } from 'typedi';
 
 @Service()
 export class MainService {
-  private readonly timeAgo: TimeAgo;
-
   constructor(
     private readonly dockerService: DockerService,
     private readonly messagingService: MessagingService,
     private readonly logService: LogService
-  ) {
-    TimeAgo.addDefaultLocale(en);
-    this.timeAgo = new TimeAgo('es-US');
-  }
+  ) { }
 
   handleDeploy = async (deploymentInfo: DeploymentInfo) => {
-    const { image, name, ports, tag } = deploymentInfo;
+    const { image, name, tag } = deploymentInfo;
 
     try {
       this.logService.log(name, 'Pulling image...');
@@ -56,9 +49,7 @@ export class MainService {
   broadcastStatus = async () => {
     const containers = await await this.dockerService.listContainers(true);
 
-    const mappedContainers = await Promise.all(
-      containers.map(container => this.dockerService.toContainerStatus(container, this.timeAgo))
-    );
+    const mappedContainers = await Promise.all(containers.map(this.dockerService.toContainerStatus));
 
     const containerStatus = mappedContainers
       .reduce((acc, container) => ({
@@ -72,10 +63,9 @@ export class MainService {
     });
   }
 
-  broadcastStatusContinuously = () => {
+  broadcastStatusContinuously = () =>
     setInterval(() => {
       this.broadcastStatus();
     }, 5000);
-  };
 
 }
