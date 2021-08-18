@@ -61,6 +61,7 @@ export const ContainerDrawer: React.FC = () => {
       height="350px"
       bodyStyle={{ padding: 0 }}
       mask={false}
+      zIndex={1000}
     >
       {!!selectedContainer && (
         <>
@@ -115,7 +116,7 @@ export const ContainerDrawer: React.FC = () => {
             </Col>
 
             <Col span={10} style={{ height: '100%' }}>
-              <LogsContainer heightOffset={58}>
+              <LogsContainer>
                 {logsFetchStatus === 'fetching' && (
                   <Text type="secondary">Fetching...</Text>
                 )}

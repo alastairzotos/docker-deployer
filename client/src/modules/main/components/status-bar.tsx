@@ -20,7 +20,7 @@ export const StatusBar: React.FC = () => {
   
   return (
     <Card
-      style={{ width: '100%', height: statusBarHeight }}
+      style={{ width: '100%', height: statusBarHeight, zIndex: 2000 }}
       bodyStyle={{ padding: '2px 0 2px 6px' }}
     >
       <ConnectionStatus

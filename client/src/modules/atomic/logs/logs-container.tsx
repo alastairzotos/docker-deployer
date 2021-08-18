@@ -1,17 +1,13 @@
 import { Card } from 'antd';
 import * as React from 'react';
 import styles from './logs.module.css';
-import { LogItem } from './log';
-import { Log } from '../../common/models';
 
 interface Props {
   title?: string;
-  heightOffset?: number;
 }
 
 export const LogsContainer: React.FC<Props> = ({
   title = "Logs",
-  heightOffset = 90,
   children
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -28,7 +24,7 @@ export const LogsContainer: React.FC<Props> = ({
       className={styles.logs}
       bodyStyle={{
         backgroundColor: 'black',
-        height: `calc(100% - ${heightOffset}px)`,
+        height: `calc(100% - 90px)`,
         width: '100%',
         padding: 0,
       }}
