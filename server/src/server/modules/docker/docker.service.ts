@@ -60,8 +60,6 @@ export class DockerService {
 
       const logs = await this.promisifyLogsStream(logsStream);
 
-      console.log(logs);
-
       // Horrible way to remove hex codes. Regex doesn't seem to work here
       return logs.map(log => log.split('').filter(chr => chr.charCodeAt(0) >= 32).join(''));
     }

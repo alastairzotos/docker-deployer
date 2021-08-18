@@ -9,7 +9,6 @@ import {
   Spin,
 } from 'antd';
 import { useContainersState } from '../state';
-import { LogsView } from '../../atomic/logs/logs-view';
 import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 import { capitalise } from '../../common/utils';
 import { LogsContainer } from '../../atomic/logs/logs-container';
