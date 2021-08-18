@@ -8,6 +8,7 @@ import { StatusBar } from '../../../modules/main/components/status-bar';
 import { useAppState } from '../state';
 import { Login } from '../../auth/components/login';
 import { useAuthState } from '../../auth/state';
+import { ContainerDrawer } from '../../containers/components/container-drawer';
 
 export const Main: React.FC = () => {
   const authToken = useAuthState(state => state.authToken);
@@ -39,6 +40,7 @@ export const Main: React.FC = () => {
         )}
 
       </AppMain>
+      <ContainerDrawer />
       <StatusBar />
     </AppTemplate>
   );

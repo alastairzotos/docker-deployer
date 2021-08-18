@@ -4,9 +4,13 @@ import { PlusOutlined, SelectOutlined } from '@ant-design/icons';
 import styles from './containers.module.css';
 import { useContainersState } from '../state';
 import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
+import { ContainerStatus } from '../../common/models';
+import { ContainerConnectionStatus } from './container-connection-status';
+import { capitalise } from '../../common/utils';
 
 export const Containers: React.FC = () => {
   const containers = useContainersState(state => state.containers);
+  const selectContainer = useContainersState(state => state.selectContainer);
 
   return (
     <Card
@@ -29,22 +33,21 @@ export const Containers: React.FC = () => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            render: (name: string, record: ContainerStatus) => (
+              <a onClick={() => selectContainer(record.id)}>{name}</a>
+            )
           },
           {
             title: 'Status',
             dataIndex: 'status',
             key: 'name',
-            render: (data: string) => (
-              <ConnectionStatus
-                connected={data === 'running'}
-                text={data[0].toUpperCase() + data.substr(1)}
-              />
-            )
+            render: (_, record: ContainerStatus) => <ContainerConnectionStatus containerStatus={record} />
           },
           {
             title: 'Started',
             dataIndex: 'startedAt',
             key: 'name',
+            render: (started: string) => capitalise(started)
           },
           {
             title: 'Process ID',

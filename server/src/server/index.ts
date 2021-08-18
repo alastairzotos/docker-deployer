@@ -21,6 +21,7 @@ export const startServer = async () => {
   appService.app.post('/login', authController.login);
   appService.app.post('/deploy', authMiddleware.authenticate, mainController.deploy);
   appService.app.post('/trigger-broadcast', authMiddleware.authenticate, mainController.triggerBroadcast);
+  appService.app.get('/get-stats', authMiddleware.authenticate, mainController.getContainerStats);
 
   messagingService.listen();
   appService.listen();

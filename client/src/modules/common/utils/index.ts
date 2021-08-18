@@ -8,3 +8,5 @@ export const formatTime = (date: Date) =>
 
 export const formatDateTime = (date: Date) => 
   `${formatDate(date)} ${formatTime(date)}`;
+
+export const capitalise = (str: string) => str[0].toLocaleUpperCase() + str.substr(1).toLocaleLowerCase();

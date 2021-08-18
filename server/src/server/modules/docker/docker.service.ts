@@ -1,8 +1,9 @@
-import { Stream } from 'stream';
+import { Stream, Readable } from 'stream';
 import { Docker } from 'node-docker-api';
-import { MessagingService } from '../messaging/messaging.service';
 import { Container } from 'node-docker-api/lib/container';
-import { ContainerStatus, DeploymentInfo } from '../../models';
+import * as prettyBytes from 'pretty-bytes';
+import { MessagingService } from '../messaging/messaging.service';
+import { ContainerStats, ContainerStatus, DeploymentInfo } from '../../models';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
 import { TimeService } from '../time/time.service';
@@ -21,7 +22,7 @@ export class DockerService {
 
   pullImage = async (containerName: string, image: string, tag: string) =>
     await this.docker.image.create({}, { fromImage: image, tag })
-      .then(stream => this.promisifyStream(stream as any as Stream, containerName));
+      .then(stream => this.promisifyPullStream(stream as any as Stream, containerName));
 
   listContainers = async (all = false) =>
     await this.docker.container.list({ all });
@@ -46,6 +47,33 @@ export class DockerService {
     return containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
   }
 
+  getContainerStats = async (id: string): Promise<ContainerStats | null> => {
+    const container = await this.docker.container.get(id);
+
+    if (container) {
+      const statsStream = await container.stats({}) as any as Readable;
+      const stats = await this.promisifyStatsStream(statsStream);
+
+      const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
+      const systemCpuUsage = stats.cpu_stats.system_cpu_usage as number;
+
+      const memUsage = stats.memory_stats.usage as number;
+      const limit = stats.memory_stats.limit as number;
+
+      const networkKey = Object.keys(stats.networks)[0];
+      const rxBytes = stats.networks[networkKey].rx_bytes;
+      const txBytes = stats.networks[networkKey].tx_bytes;
+
+      return {
+        cpuPerc: (cpuUsage / systemCpuUsage) * 100,
+        memPerc: (memUsage / limit) * 100,
+        memUsage: `${prettyBytes(memUsage)} / ${prettyBytes(limit)}`,
+        netIOUsage: `${prettyBytes(rxBytes)} / ${prettyBytes(txBytes)}`
+      };
+    }
+
+    return null;
+  }
 
   toContainerStatus = async (container: Container): Promise<ContainerStatus> => {
     const status = await container.status();
@@ -60,7 +88,16 @@ export class DockerService {
     }
   }
 
-  private promisifyStream = (stream: Stream, container: string) =>
+  private promisifyStatsStream = (stream: Readable): Promise<any> =>
+    new Promise(resolve => {
+      stream.on('data', (data: Buffer) => {
+        resolve(JSON.parse(data.toString()));
+
+        stream.destroy();
+      })
+    })
+
+  private promisifyPullStream = (stream: Stream, container: string) =>
     new Promise((resolve, reject) => {
       stream.on('data', (data: Buffer) => {
         const strData = data.toString();
