@@ -5,18 +5,18 @@ import { MainService } from './main.service';
 
 @Service()
 export class MainController {
-  constructor(private readonly service: MainService) { }
+  constructor(private readonly mainService: MainService) { }
 
   deploy = async (req: express.Request, res: express.Response) => {
     const deploymentInfo = req.body as DeploymentInfo;
 
     res.json({
-      response: await this.service.handleDeploy({ tag: 'latest', ...deploymentInfo })
+      response: await this.mainService.handleDeploy({ tag: 'latest', ...deploymentInfo })
     });
   };
 
   triggerBroadcast = async (_: express.Request, res: express.Response) => {
-    await this.service.broadcastStatus();
+    await this.mainService.broadcastStatus();
     res.sendStatus(201);
   }
 }

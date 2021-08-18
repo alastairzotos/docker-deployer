@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 export class AuthMiddleware  {
   constructor(
     private readonly coreService: CoreService,
-    private readonly service: AuthService
+    private readonly authService: AuthService
   ) {}
 
   authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -22,12 +22,12 @@ export class AuthMiddleware  {
   
     // Authenticate with plain password or JWT
     // JWT is not very useful from CICD pipelines
-    if (!(await this.service.verifyPassword(token))) {
+    if (!(await this.authService.verifyPassword(token))) {
       const secret = await this.coreService.readJwtSecret();
   
       try {
         const decoded = jwt.verify(token, secret);
-        if (!(await this.service.verifyPassword(decoded))) {
+        if (!(await this.authService.verifyPassword(decoded))) {
           return res.status(401).send('Unauthorized');
         }
       } catch {

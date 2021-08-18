@@ -3,7 +3,6 @@ import { Docker } from 'node-docker-api';
 import { MessagingService } from '../messaging/messaging.service';
 import { Container } from 'node-docker-api/lib/container';
 import { ContainerStatus, DeploymentInfo } from '../../models';
-import TimeAgo from 'javascript-time-ago';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
 import { TimeService } from '../time/time.service';
