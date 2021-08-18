@@ -59,7 +59,7 @@ export const ContainerDrawer: React.FC = () => {
       {!!selectedContainer && (
         <>
           <Row style={fullHeight}>
-            <Col span={16}>
+            <Col span={14}>
               {fetchStatus === 'fetching' && (
                 <div
                   style={{
@@ -87,10 +87,10 @@ export const ContainerDrawer: React.FC = () => {
                       />
                     </Col>
                     <Col span={8}>
-                      <Statistic title="Mem." value={stats?.memUsage} />
+                      <Statistic title="Memory" value={stats?.memUsage} />
                     </Col>
                     <Col span={8}>
-                      <ProgressWithTitle title="Mem %" percent={stats?.memPerc!} />
+                      <ProgressWithTitle title="Memory" percent={stats?.memPerc!} />
                     </Col>
                   </Row>
                   <Row>
@@ -98,17 +98,17 @@ export const ContainerDrawer: React.FC = () => {
                       <Statistic title="Started" value={capitalise(selectedContainer.startedAt)} />
                     </Col>
                     <Col span={8}>
-                      <Statistic title="Net I/O" value={stats?.netIOUsage} />
+                      <Statistic title="Network I/O" value={stats?.netIOUsage} />
                     </Col>
                     <Col span={8}>
-                      <ProgressWithTitle title="CPU %" percent={stats?.cpuPerc!} />
+                      <ProgressWithTitle title="CPU" percent={stats?.cpuPerc!} />
                     </Col>
                   </Row>
                 </div>
               )}
             </Col>
 
-            <Col span={8}>
+            <Col span={10}>
               <LogsView logs={[]} />
             </Col>
           </Row>
