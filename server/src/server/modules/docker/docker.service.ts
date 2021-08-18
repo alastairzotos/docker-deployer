@@ -51,7 +51,6 @@ export class DockerService {
     const container = await this.docker.container.get(id);
 
     if (container) {
-
       const logsStream = await container.logs({
         follow: true,
         stdout: true,
