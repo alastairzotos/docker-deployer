@@ -20,7 +20,7 @@ export class AuthMiddleware  {
   
     const token = headers.authorization.split(' ')[1];
   
-    // Authenticate with plain password of JWT
+    // Authenticate with plain password or JWT
     // JWT is not very useful from CICD pipelines
     if (!(await this.service.verifyPassword(token))) {
       const secret = await this.coreService.readJwtSecret();
