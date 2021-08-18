@@ -5,7 +5,7 @@ import { WsMessage } from '../../models';
 
 @Service()
 export class MessagingService {
-  httpServer: http.Server;
+  private httpServer: http.Server;
   private wsServer: WebSocket.Server;
 
   constructor() {}

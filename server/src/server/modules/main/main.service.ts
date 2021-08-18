@@ -65,5 +65,4 @@ export class MainService {
     setInterval(() => {
       this.broadcastStatus();
     }, 5000);
-
 }
