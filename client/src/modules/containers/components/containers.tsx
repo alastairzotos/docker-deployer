@@ -16,11 +16,7 @@ export const Containers: React.FC = () => {
     <Card
       title="Containers"
       className={styles.containers}
-      bodyStyle={{
-        padding: 0,
-        height: 'calc(100% - 90px)',
-        // backgroundColor: 'black',
-      }}
+      bodyStyle={{ padding: 0, height: 'calc(100% - 90px)' }}
       extra={
         <Button type="default" size="small">
           <PlusOutlined /> Deployment
@@ -40,31 +36,31 @@ export const Containers: React.FC = () => {
           {
             title: 'Status',
             dataIndex: 'status',
-            key: 'name',
+            key: 'status',
             render: (_, record: ContainerStatus) => <ContainerConnectionStatus containerStatus={record} />
           },
           {
             title: 'Started',
             dataIndex: 'startedAt',
-            key: 'name',
+            key: 'startedAt',
             render: (started: string) => capitalise(started)
           },
           {
             title: 'Process ID',
             dataIndex: 'pid',
-            key: 'name',
+            key: 'pid',
             render: (pid: number) => pid > 0 ? pid : 'n/a'
           },
           {
             title: 'Port',
             dataIndex: 'port',
-            key: 'name',
+            key: 'port',
             render: (port: number) => port > 0 ? port : 'n/a'
           },
           {
             title: 'View',
             dataIndex: 'port',
-            key: 'name',
+            key: 'x',
             render: (port: number) => (
               port > 0
                 ? (
@@ -78,7 +74,7 @@ export const Containers: React.FC = () => {
           }
         ]}
 
-        dataSource={Object.keys(containers).map(id => containers[id])}
+        dataSource={Object.keys(containers).map(id => ({ key: id, ...containers[id] }))}
       />
     </Card>
   )
