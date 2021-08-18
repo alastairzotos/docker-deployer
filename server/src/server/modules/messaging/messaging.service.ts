@@ -15,6 +15,9 @@ export class MessagingService {
     this.wsServer = new WebSocket.Server({ server: this.httpServer });
   }
 
+  listen = (port: number) =>
+    this.httpServer.listen(port, () => console.log(`Websocket server listening on ws://localhost:${port}`));
+
   sendMessage = (message: WsMessage) =>
     this.wsServer.clients.forEach(client => (
       client.send(JSON.stringify(message))

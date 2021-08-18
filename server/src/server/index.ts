@@ -30,9 +30,7 @@ export const startServer = async () => {
   app.post('/deploy', authMiddleware.authenticate, mainController.deploy);
   app.post('/trigger-broadcast', authMiddleware.authenticate, mainController.triggerBroadcast);
 
-  messagingService
-    .httpServer.listen(wsPort, () => console.log(`Websocket server listening on ws://localhost:${wsPort}`));
-
+  messagingService.listen(wsPort);
   app.listen(port, () => console.log(`App server listening on http://localhost:${port}`));
 };
 
