@@ -5,9 +5,7 @@ import { Container } from 'node-docker-api/lib/container';
 import { ContainerStatus } from '../../models';
 import TimeAgo from 'javascript-time-ago';
 import { LogService } from '../log/log.service';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 export class DockerService {
   constructor(
     private readonly docker: Docker,

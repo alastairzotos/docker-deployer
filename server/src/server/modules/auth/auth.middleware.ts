@@ -1,17 +1,15 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import { CoreService } from '../../../core';
 import { AuthService } from './auth.service';
 
-@Injectable()
-export class AuthMiddleware implements NestMiddleware {
+export class AuthMiddleware  {
   constructor(
     private readonly coreService: CoreService,
     private readonly service: AuthService
   ) {}
 
-  async use(req: express.Request, res: express.Response, next: express.NextFunction) {
+  authenticate = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const headers = req.headers;
   
     if (!headers || !headers.authorization || !headers.authorization.startsWith('Bearer ')) {

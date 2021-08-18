@@ -1,9 +1,7 @@
-import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { CoreService } from '../../../core';
 
-@Injectable()
 export class AuthService {
   constructor(private readonly coreService: CoreService) {}
 

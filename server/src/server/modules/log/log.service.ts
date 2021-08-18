@@ -1,7 +1,5 @@
-import { Injectable } from "@nestjs/common";
 import { MessagingService } from "../messaging/messaging.service";
 
-@Injectable()
 export class LogService {
   private logs: string[] = [];
 
