@@ -19,9 +19,7 @@ export class MainService {
       this.logService.log(name, 'Pulling image...');
       await this.dockerService.pullImage(name, image, tag);
 
-      const containers = await this.dockerService.listContainers();
-      const existingContainer = containers
-        .find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
+      const existingContainer = await this.dockerService.getContainerByName(name);
 
       if (!!existingContainer) {
         this.logService.log(name, 'Removing existing container...');

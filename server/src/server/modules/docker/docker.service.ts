@@ -42,6 +42,12 @@ export class DockerService {
     });
   }
 
+  getContainerByName = async (name: string): Promise<Container> => {
+    const containers = await this.listContainers();
+    return containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
+  }
+
+
   toContainerStatus = async (container: Container): Promise<ContainerStatus> => {
     const status = await container.status();
 
