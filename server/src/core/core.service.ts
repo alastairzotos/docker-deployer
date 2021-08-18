@@ -8,6 +8,9 @@ export class CoreService {
   private readonly pwdKey = 'PASSWORD_HASH';
   private readonly jwtSecretKey = 'SECRET';
 
+  readonly httpPort = 4042;
+  readonly wsPort = 4043;
+
   readonly cliName = 'mctrl';
   readonly serverProcessName = 'mctrl-server';
   readonly clientProcessName = 'mctrl-client';

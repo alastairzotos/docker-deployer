@@ -7,14 +7,15 @@ import { AuthController } from './modules/auth/auth.controller';
 import { AuthMiddleware } from './modules/auth/auth.middleware';
 import { MainController } from './modules/main/main.controller';
 import { MessagingService } from './modules/messaging/messaging.service';
+import { CoreService } from 'src/core';
 
-export const startServer = async () => {
-  const port = 4042;
-  const wsPort = 4043;
-  
+export const startServer = async () => {  
   const app = express();
   app.use(express.json());
   app.use(cors());
+
+  const port = Container.get<CoreService>(CoreService).httpPort;
+  const wsPort = Container.get<CoreService>(CoreService).wsPort;
 
   const messagingService = Container.get<MessagingService>(MessagingService);
   messagingService.setup(app);
