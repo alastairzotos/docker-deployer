@@ -1,23 +1,22 @@
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
-import { pwdKey, secretKey } from "../../core";
-import { readStorage } from "../../storage";
+import { CoreService } from '../../core';
 
 export class AuthService {
-  constructor() {}
+  constructor(private readonly coreService: CoreService) {}
 
   handleLogin = async (password: string) => {
     if (!(await this.verifyPassword(password))) {
       return null;
     }
 
-    const secret = (await readStorage())[secretKey];
+    const secret = this.coreService.readSecret();
 
     return jwt.sign(password, secret);
   }
 
   verifyPassword = async (password: string) => {
-    const pwdHash = (await readStorage())[pwdKey];
+    const pwdHash = await this.coreService.readPasswordHash();
   
     return await bcrypt.compare(password, pwdHash);
   }
