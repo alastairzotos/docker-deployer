@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useAppState } from '../state';
+import { useAuthState } from '../auth/state';
 
 class HttpClient {
   private readonly baseUrl = `${window.location.protocol}//${window.location.hostname}:4042`;
@@ -17,7 +17,7 @@ class HttpClient {
   async triggerBroadcast() {
     await axios.post(`${this.baseUrl}/trigger-broadcast`, {}, {
       headers: {
-        authorization: `Bearer ${useAppState.getState().authToken}`
+        authorization: `Bearer ${useAuthState.getState().authToken}`
       }
     });
   }

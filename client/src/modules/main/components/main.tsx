@@ -2,14 +2,15 @@ import * as React from 'react';
 import SplitPane from 'react-split-pane';
 import { AppMain, headerHeight } from '../../../modules/common/components/app-main';
 import { AppTemplate } from '../../../modules/common/components/app-template';
-import { Containers } from '../../../modules/main/components/containers';
-import { Output } from './output';
+import { Containers } from '../../../modules/containers/components/containers';
+import { Output } from '../../output/components/output';
 import { StatusBar } from '../../../modules/main/components/status-bar';
 import { useAppState } from '../state';
-import { Login } from './login';
+import { Login } from '../../auth/components/login';
+import { useAuthState } from '../../auth/state';
 
 export const Main: React.FC = () => {
-  const authToken = useAppState(state => state.authToken);
+  const authToken = useAuthState(state => state.authToken);
   const connectToWs = useAppState(state => state.connectToWss);
 
   React.useEffect(() => {

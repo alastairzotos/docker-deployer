@@ -1,9 +1,9 @@
 import { Card } from 'antd';
 import * as React from 'react';
 import { statusBarHeight } from '../../common/components/app-main';
-import { ConnectionState } from '../models';
 import { useAppState } from '../state';
-import { ConnectionStatus } from '../../common/components/connection-status';
+import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
+import { ConnectionState } from '../../common/models';
 
 const getConnectionStatePrompt = (state: ConnectionState | null): string => {
   switch (state) {

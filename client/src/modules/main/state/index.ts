@@ -1,71 +1,40 @@
 import create from 'zustand';
-import { message } from 'antd';
-import { ContainerStatuses, Log, WsMessage } from '../../common/models';
-import { httpClient } from '../http/client';
-import { CallStatus, ConnectionState } from '../models';
-
-const authTokenKey = 'mctrl-auth-token';
+import { ConnectionState, WsMessage } from '../../common/models';
+import { useContainersState } from '../../containers/state';
+import { useOutputState } from '../../output/state';
 
 export interface AppStateValues {
   connectionState: ConnectionState | null;
   ws: WebSocket | null;
-  logs: Log[];
-  containers: ContainerStatuses;
-  authToken: string | null;
-  loginStatus: CallStatus | null;
 }
 
 export interface AppStateActions {
   connectToWss: () => void;
-  login: (password: string) => void;
 }
 
 export type AppState = AppStateValues & AppStateActions;
 
 const initialState: AppStateValues = {
   connectionState: null,
-  ws: null,
-  logs: [],
-  containers: {},
-  authToken: localStorage.getItem(authTokenKey) || null,
-  loginStatus: null
+  ws: null
 };
 
 export const useAppState = create<AppState>((set, get) => ({
   ...initialState,
 
-  login: async password => {
-    set({ loginStatus: 'fetching' });
-
-    try {
-      const jwt = await httpClient.login(password);
-      set({
-        loginStatus: 'success',
-        authToken: jwt!
-      });
-
-      localStorage.setItem(authTokenKey, jwt!);
-      message.success('Access granted');
-      await httpClient.triggerBroadcast();
-    } catch (e) {
-      set({ loginStatus: 'error' });
-    }
-  },
-
   connectToWss: () => {
+    const addLog = useOutputState.getState().addLog;
+    const setContainers = useContainersState.getState().setContainers;
+
     const ws = new WebSocket(`ws://${window.location.hostname}:4043`);
-    set({
-      connectionState: 'connecting',
-      ws
-    });
+    set({ connectionState: 'connecting', ws });
 
     ws.onopen = () => set({ connectionState: 'connected' });
+    
     ws.onclose = () => {
       set({ connectionState: 'disconnected' });
 
-      setTimeout(() => {
-        get().connectToWss();
-      }, 1000);
+      setTimeout(get().connectToWss, 1000);
     }
 
     ws.onmessage = evt => {
@@ -73,39 +42,11 @@ export const useAppState = create<AppState>((set, get) => ({
 
       switch (data.type) {
         case 'log':
-          if (data.log?.progress) {
-            const foundLog = get().logs.find(log => log.progress && log.progress.id === data.log?.progress?.id);
-            if (foundLog) {
-              set({
-                logs: get().logs.map(log => (
-                  log.progress && log.progress.id === foundLog.progress?.id
-                  ? data.log!
-                  : log
-                ))
-              })
-            } else {
-              set({
-                logs: [
-                  ...get().logs,
-                  data.log!
-                ]
-              })
-            }
-          } else {
-            set({
-              logs: [
-                ...get().logs,
-                {
-                  ...data.log!,
-                  date: new Date(data.log?.date as any as string)
-                }
-              ]
-            });
-          }
+          addLog(data.log!);
           break;
 
         case 'containers':
-          set({ containers: data.containerStatus! });
+          setContainers(data.containerStatus!);
           break;
       }
     }

@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Button, Card, Table } from 'antd';
 import { PlusOutlined, SelectOutlined } from '@ant-design/icons';
 import styles from './containers.module.css';
-import { useAppState } from '../state';
-import { ConnectionStatus } from '../../common/components/connection-status';
+import { useContainersState } from '../state';
+import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 
 export const Containers: React.FC = () => {
-  const containers = useAppState(state => state.containers);
+  const containers = useContainersState(state => state.containers);
 
   return (
     <Card

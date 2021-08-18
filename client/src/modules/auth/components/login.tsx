@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { useAppState } from '../state';
 import { Modal, Typography, Input } from 'antd';
+import { useAuthState } from '../state';
 
 const { Text } = Typography;
 
 export const Login: React.FC = () => {
   const [pwd, setPwd] = React.useState('');
 
-  const loginStatus = useAppState(state => state.loginStatus);
-  const login = useAppState(state => state.login);
+  const loginStatus = useAuthState(state => state.loginStatus);
+  const login = useAuthState(state => state.login);
 
   const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

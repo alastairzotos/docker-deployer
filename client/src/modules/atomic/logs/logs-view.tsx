@@ -2,7 +2,7 @@ import { Card } from 'antd';
 import * as React from 'react';
 import styles from './logs.module.css';
 import { LogItem } from './log';
-import { Log } from '../models';
+import { Log } from '../../common/models';
 
 interface Props {
   title?: string;
