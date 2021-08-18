@@ -3,16 +3,18 @@ import * as WebSocket from 'ws';
 import * as http from 'http';
 import { WsMessage } from '../../models';
 import { CoreService } from '../../../core';
+import { AppService } from '../app/app.service';
 
 @Service()
 export class MessagingService {
   private httpServer: http.Server;
   private wsServer: WebSocket.Server;
 
-  constructor(private readonly coreService: CoreService) {}
-
-  setup = (app: http.RequestListener) => {
-    this.httpServer = http.createServer(app);
+  constructor(
+    private readonly coreService: CoreService,
+    private readonly appService: AppService,
+  ) {
+    this.httpServer = http.createServer(this.appService.app);
     this.wsServer = new WebSocket.Server({ server: this.httpServer });
   }
 
