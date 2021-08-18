@@ -16,15 +16,14 @@ const toContainerStatus = async (container: Container): Promise<ContainerStatus>
     id: container.id,
     name: status.data['Name'].substr(1),
     pid: status.data['State'].Pid,
-    port: container.data['Ports'][0]['PublicPort'],
+    port: container.data['Ports'].length ? container.data['Ports'][0]['PublicPort'] : -1,
     status: status.data['State'].Status,
     startedAt: timeAgo.format(new Date(status.data['State'].StartedAt).getTime())
   }
 };
 
-
 export const handleBroadcastStatus = async (docker: Docker, wss: WebSocket.Server) => {
-  const containers = await docker.container.list();
+  const containers = await docker.container.list({ all: true });
 
   const containerStatus = (await Promise.all(containers.map(toContainerStatus)))
     .reduce((acc, container) => ({
