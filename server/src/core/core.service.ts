@@ -6,7 +6,7 @@ import { StorageService } from "./storage.service";
 @Service()
 export class CoreService {
   private readonly pwdKey = 'PASSWORD_HASH';
-  private readonly secretKey = 'SECRET';
+  private readonly jwtSecretKey = 'SECRET';
 
   readonly cliName = 'mctrl';
   readonly serverProcessName = 'mctrl-server';
@@ -19,20 +19,20 @@ export class CoreService {
 
   setup = async () => {
     await this.storageService.createStorage();
-    await this.createSecret();
+    await this.createJwtSecret();
   }
 
-  readSecret = async () => (await this.storageService.readStorage())[this.secretKey];
+  readJwtSecret = async () => (await this.storageService.readStorage())[this.jwtSecretKey];
   readPasswordHash = async () => (await this.storageService.readStorage())[this.pwdKey];
 
   writePasswordHash = async (pwdHash: string) =>
     await this.storageService.appendStorage({ [this.pwdKey]: pwdHash });
 
-  private createSecret = async () => {
+  private createJwtSecret = async () => {
     const storage = await this.storageService.readStorage();
 
-    if (!storage[this.secretKey]) {
-      await this.storageService.appendStorage({ [this.secretKey]: uuidv4() });
+    if (!storage[this.jwtSecretKey]) {
+      await this.storageService.appendStorage({ [this.jwtSecretKey]: uuidv4() });
     }
   }
 }

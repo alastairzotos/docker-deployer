@@ -12,7 +12,7 @@ export class AuthService {
       return null;
     }
 
-    const secret = this.coreService.readSecret();
+    const secret = this.coreService.readJwtSecret();
 
     return jwt.sign(password, secret);
   }
