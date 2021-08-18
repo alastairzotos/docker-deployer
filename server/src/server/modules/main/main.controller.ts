@@ -1,7 +1,9 @@
 import * as express from 'express';
+import { Service } from 'typedi';
 import { DeploymentInfo } from '../../models';
 import { MainService } from './main.service';
 
+@Service()
 export class MainController {
   constructor(private readonly service: MainService) { }
 

@@ -1,8 +1,10 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+import { Service } from 'typedi';
 import { CoreService } from '../../../core';
 import { AuthService } from './auth.service';
 
+@Service()
 export class AuthMiddleware  {
   constructor(
     private readonly coreService: CoreService,

@@ -1,6 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import { promisify } from 'util';
+import { Service } from 'typedi';
+import { Storage } from './models';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -9,8 +11,7 @@ const mkdir = promisify(fs.mkdir);
 const rm = promisify(fs.rm);
 const rmdir = promisify(fs.rmdir);
 
-export type Storage = { [key: string]: string };
-
+@Service()
 export class StorageService {
   private readonly storagePath = path.resolve(__dirname, '..', '_storage');
   private readonly storageFilePath = path.resolve(this.storagePath, 'data.json');

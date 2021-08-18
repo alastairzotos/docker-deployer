@@ -1,5 +1,7 @@
+import { Service } from "typedi";
 import { MessagingService } from "../messaging/messaging.service";
 
+@Service()
 export class LogService {
   private logs: string[] = [];
 

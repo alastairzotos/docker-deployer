@@ -4,7 +4,9 @@ import { ContainerStatuses, DeploymentInfo } from '../../models';
 import { MessagingService } from '../messaging/messaging.service';
 import { DockerService } from '../docker/docker.service';
 import { LogService } from '../log/log.service';
+import { Service } from 'typedi';
 
+@Service()
 export class MainService {
   private readonly timeAgo: TimeAgo;
 

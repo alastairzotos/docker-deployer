@@ -5,13 +5,18 @@ import { Container } from 'node-docker-api/lib/container';
 import { ContainerStatus } from '../../models';
 import TimeAgo from 'javascript-time-ago';
 import { LogService } from '../log/log.service';
+import { Service } from 'typedi';
 
+@Service()
 export class DockerService {
+  readonly docker: Docker;
+
   constructor(
-    private readonly docker: Docker,
     private messagingService: MessagingService,
     private logService: LogService
-  ) { }
+  ) {
+    this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
+  }
 
   pullImage = async (
     containerName: string,

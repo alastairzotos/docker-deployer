@@ -1,6 +1,8 @@
 import * as pm2 from 'pm2';
+import { Service } from 'typedi';
 import { CoreService } from "../../core";
 
+@Service()
 export class StopService {
   constructor(private readonly coreService: CoreService) { }
 

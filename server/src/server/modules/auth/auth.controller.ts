@@ -1,6 +1,8 @@
 import * as express from 'express';
+import { Service } from 'typedi';
 import { AuthService } from './auth.service';
 
+@Service()
 export class AuthController {
   constructor(private readonly service: AuthService) { }
 

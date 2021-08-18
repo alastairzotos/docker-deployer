@@ -1,7 +1,9 @@
 import * as rl from 'readline-sync';
+import { Service } from 'typedi';
 import { StorageService } from '../../core';
 import { StopService } from '../stop/stop.service';
 
+@Service()
 export class ResetService {
   constructor(
     private readonly stopService: StopService,

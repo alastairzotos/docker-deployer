@@ -3,7 +3,9 @@ import * as readline from 'readline-sync';
 import * as bcrypt from 'bcryptjs';
 import * as ip from 'ip';
 import { CoreService } from "../../core";
+import { Service } from 'typedi';
 
+@Service()
 export class StartService {
   constructor(private readonly coreService: CoreService) { }
 

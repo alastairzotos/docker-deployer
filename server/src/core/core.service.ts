@@ -1,7 +1,9 @@
 import * as path from 'path';
+import { Service } from 'typedi';
 import { v4 as uuidv4 } from 'uuid';
 import { StorageService } from "./storage.service";
 
+@Service()
 export class CoreService {
   private readonly pwdKey = 'PASSWORD_HASH';
   private readonly secretKey = 'SECRET';

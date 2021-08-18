@@ -1,11 +1,22 @@
+import { Service } from 'typedi';
 import * as WebSocket from 'ws';
+import * as http from 'http';
 import { WsMessage } from '../../models';
 
+@Service()
 export class MessagingService {
-  constructor(private readonly wss: WebSocket.Server) { }
+  httpServer: http.Server;
+  private wsServer: WebSocket.Server;
+
+  constructor() {}
+
+  setup = (app: http.RequestListener) => {
+    this.httpServer = http.createServer(app);
+    this.wsServer = new WebSocket.Server({ server: this.httpServer });
+  }
 
   sendMessage = (message: WsMessage) =>
-    this.wss.clients.forEach(client => (
+    this.wsServer.clients.forEach(client => (
       client.send(JSON.stringify(message))
     ));
 }

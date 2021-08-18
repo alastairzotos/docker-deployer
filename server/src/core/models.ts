@@ -3,3 +3,5 @@ export interface CommandController {
 }
 
 export type Commands = { [key: string]: CommandController };
+
+export type Storage = { [key: string]: string };
