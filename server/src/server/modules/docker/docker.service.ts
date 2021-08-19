@@ -47,7 +47,7 @@ export class DockerService {
     return containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
   }
 
-  getContainerLogs = async (id: string): Promise<string[]> => {
+  getContainerLogs = async (id: string): Promise<void> => {
     const container = await this.docker.container.get(id);
 
     if (container) {
@@ -57,10 +57,16 @@ export class DockerService {
         stderr: true
       }) as any as Readable;
 
-      return await this.promisifyLogsStream(logsStream);
+      logsStream.on('data', (data: Buffer) => {
+        this.messagingService.sendMessage({
+          type: 'logs',
+          containerLogs: {
+            id,
+            logs: data.toString().split('\n')
+          }
+        })
+      })
     }
-
-    return null;
   }
 
   getContainerStats = async (id: string): Promise<ContainerStats | null> => {
@@ -104,15 +110,8 @@ export class DockerService {
     }
   }
 
-  private promisifyLogsStream = (stream: Readable): Promise<string[]> =>
-    new Promise(resolve => {
-      stream.on('data', (data: Buffer) => {
-        resolve(data.toString().split('\n'));
-      })
-    })
-
   private promisifyStatsStream = (stream: Readable): Promise<any> =>
-    new Promise(resolve => {
+    new Promise((resolve, reject) => {
       stream.on('data', (data: Buffer) => {
         resolve(JSON.parse(data.toString()));
 

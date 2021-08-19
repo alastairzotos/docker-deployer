@@ -25,7 +25,7 @@ export const ContainerDrawer: React.FC = () => {
       mask={false}
       zIndex={1000}
     >
-      {!!selectedContainer && (
+      {!!selectedContainer && !!selectedId && (
         <>
           <Row style={fullHeight}>
             <Col span={14} style={fullHeight}>
@@ -33,7 +33,7 @@ export const ContainerDrawer: React.FC = () => {
             </Col>
 
             <Col span={10} style={fullHeight}>
-              <Logs />
+              <Logs id={selectedId} />
             </Col>
           </Row>
         </>

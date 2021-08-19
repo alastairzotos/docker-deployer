@@ -32,13 +32,11 @@ class HttpClient {
   }
 
   async getContainerLogs(id: string) {
-    const logs = await axios.get<string[]>(`${this.baseUrl}/get-logs?id=${id}`, {
+    await axios.get<string[]>(`${this.baseUrl}/get-logs?id=${id}`, {
       headers: {
         authorization: `Bearer ${useAuthState.getState().authToken}`
       }
     })
-
-    return logs.data;
   }
 }
 

@@ -1,39 +1,32 @@
 import { Typography } from 'antd';
 import * as React from 'react';
 import { LogsContainer } from '../../atomic/logs/logs-container';
+import { httpClient } from '../../http/client';
 import { useContainersState } from '../state';
 
 const { Text } = Typography;
 
-export const Logs: React.FC = () => {
-  const selectedId = useContainersState(state => state.selectedId);
+interface Props {
+  id: string;
+}
 
-  const logsFetchStatus = useContainersState(state => state.containerLogsFetchStatus);
-  const logs = useContainersState(state => state.selectedContainerLogs);
-  const getLogs = useContainersState(state => state.getContainerLogs);
+export const Logs: React.FC<Props> = ({ id }) => {
+  const logs = useContainersState(state => state.logs)[id];
 
   React.useEffect(() => {
-    getLogs();
-  }, [selectedId, getLogs]);
+    if (!logs) {
+      httpClient.getContainerLogs(id);
+    }
+  }, [logs]);
 
   return (
     <LogsContainer>
-      {logsFetchStatus === 'fetching' && (
-        <Text type="secondary">Fetching...</Text>
-      )}
-
-      {logsFetchStatus === 'error' && (
-        <Text type="danger">There was an error fetching the logs</Text>
-      )}
-
-      {logsFetchStatus === 'success' && !!logs && (
-        logs.map((log, index) => (
-          <React.Fragment key={index}>
-            <Text type="success" key={index}>{log}</Text>
-            <br />
-          </React.Fragment>
-        ))
-      )}
+      {!!logs && logs.map((log, index) => (
+        <React.Fragment key={index}>
+          <Text type="success" key={index}>{log}</Text>
+          <br />
+        </React.Fragment>
+      ))}
     </LogsContainer>
   )
 };

@@ -29,6 +29,7 @@ export class MainController {
   }
 
   getContainerLogs = async (req: express.Request, res: express.Response) => {
-    res.send(await this.dockerService.getContainerLogs(req.query.id as string));
+    await this.dockerService.getContainerLogs(req.query.id as string)
+    res.sendStatus(201);
   }
 }

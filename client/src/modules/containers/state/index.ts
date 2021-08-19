@@ -9,9 +9,8 @@ export interface ContainersStateValues {
 
   containerStatsFetchStatus: CallStatus | null;
   selectedContainerStats: ContainerStats | null;
-
-  containerLogsFetchStatus: CallStatus | null;
-  selectedContainerLogs: string[] | null;
+  
+  logs: { [id: string]: string[] };
 }
 
 export interface ContainersStateActions {
@@ -21,8 +20,7 @@ export interface ContainersStateActions {
   setSelectedContainerStats: (stats: ContainerStats | null) => void;
   getContainerStats: () => Promise<void>;
 
-  setSelectedContainerLogs: (logs: string[] | null) => void;
-  getContainerLogs: () => Promise<void>;
+  addContainerLogs: (id: string, logs: string[]) => void;
 }
 
 export type ContainersState = ContainersStateValues & ContainersStateActions;
@@ -32,8 +30,8 @@ const initialState: ContainersStateValues = {
   selectedId: null,
   selectedContainerStats: null,
   containerStatsFetchStatus: null,
-  containerLogsFetchStatus: null,
-  selectedContainerLogs: null
+
+  logs: {}
 };
 
 export const useContainersState = create<ContainersState>((set, get) => ({
@@ -62,23 +60,13 @@ export const useContainersState = create<ContainersState>((set, get) => ({
     }
   },
 
-  setSelectedContainerLogs: logs => set({ selectedContainerLogs: logs }),
-
-  getContainerLogs: async () => {
-    const selectedId = get().selectedId;
-
-    if (!!selectedId) {
-      try {
-        set({ containerLogsFetchStatus: 'fetching' });
-        const logs = await httpClient.getContainerLogs(selectedId);
-
-        set({ selectedContainerLogs: logs, containerLogsFetchStatus: 'success' });
-
-      } catch {
-        set({containerLogsFetchStatus: 'error' });
-      }
-    } else {
-      set({ selectedContainerLogs: null });
+  addContainerLogs: (id, logs) => set({
+    logs: {
+      ...get().logs,
+      [id]: [
+        ...(get().logs[id] || []),
+        ...logs
+      ]
     }
-  }
+  }),
 }));

@@ -1,4 +1,4 @@
-export type WsMessageType = 'output' | 'containers';
+export type WsMessageType = 'output' | 'containers' | 'logs';
 
 export interface Progress {
   type: string;
@@ -25,8 +25,14 @@ export interface ContainerStatus {
 
 export type ContainerStatuses = { [id: string]: ContainerStatus };
 
+export interface ContainerLogs {
+  id: string;
+  logs: string[];
+}
+
 export interface WsMessage {
   type: WsMessageType;
   output?: Output;
   containerStatus?: ContainerStatuses;
+  containerLogs?: ContainerLogs;
 }
