@@ -54,7 +54,7 @@ export const Stats: React.FC<Props> = ({ id }) => {
               />
             </Col>
             <Col span={8}>
-              <Statistic title="Memory" value={stats?.memUsage} />
+              <Statistic title="Memory / Limit" value={stats?.memUsage} />
             </Col>
             <Col span={8}>
               <ProgressWithTitle title="Memory" percent={stats?.memPerc!} />
