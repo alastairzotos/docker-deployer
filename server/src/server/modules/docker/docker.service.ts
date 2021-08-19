@@ -160,8 +160,8 @@ export class DockerService {
 
   private sendDownloadProgress = (container: string, id: string, current: number, total: number) =>
     this.messagingService.sendMessage({
-      type: 'log',
-      log: {
+      type: 'output',
+      output: {
         container,
         progress: { type: 'Downloading', id, current, total }
       }

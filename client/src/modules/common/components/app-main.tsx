@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Layout, Space } from 'antd';
+import { Layout } from 'antd';
 
 const { Content } = Layout;
 

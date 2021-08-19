@@ -1,47 +1,47 @@
 import create from 'zustand';
-import { Log } from '../../common/models';
+import { Output } from '../../common/models';
 
 export interface OutputStateValues {
-  logs: Log[];
+  outputs: Output[];
 }
 
 export interface OutputStateActions {
-  addLog: (log: Log) => void;
-  setProgress: (log: Log) => void;
+  addOutput: (output: Output) => void;
+  setProgress: (output: Output) => void;
 }
 
 export type OutputState = OutputStateValues & OutputStateActions;
 
 const initialState: OutputStateValues = {
-  logs: []
+  outputs: []
 };
 
 export const useOutputState = create<OutputState>((set, get) => ({
   ...initialState,
 
-  addLog: log => {
-    if (log?.progress) {
-      get().setProgress(log);
+  addOutput: output => {
+    if (output?.progress) {
+      get().setProgress(output);
     } else {
       set({
-        logs: [...get().logs, { ...log!, date: new Date(log?.date as any as string) }]
+        outputs: [...get().outputs, { ...output!, date: new Date(output?.date as any as string) }]
       });
     }
   },
 
-  setProgress: progressLog => {
-    const foundLog = get().logs.find(log => log.progress && log.progress.id === progressLog?.progress?.id);
-    if (foundLog) {
+  setProgress: progressOutput => {
+    const foundOutput = get().outputs.find(output => output.progress && output.progress.id === progressOutput?.progress?.id);
+    if (foundOutput) {
       set({
-        logs: get().logs.map(log => (
-          log.progress && log.progress.id === foundLog.progress?.id
-          ? progressLog!
-          : log
+        outputs: get().outputs.map(output => (
+          output.progress && output.progress.id === foundOutput.progress?.id
+          ? progressOutput!
+          : output
         ))
       })
     } else {
       set({
-        logs: [...get().logs, progressLog!]
+        outputs: [...get().outputs, progressOutput!]
       });
     }
   }

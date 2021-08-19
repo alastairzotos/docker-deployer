@@ -23,7 +23,7 @@ export const useAppState = create<AppState>((set, get) => ({
   ...initialState,
 
   connectToWss: () => {
-    const addLog = useOutputState.getState().addLog;
+    const addLog = useOutputState.getState().addOutput;
     const setContainers = useContainersState.getState().setContainers;
 
     const ws = new WebSocket(`ws://${window.location.hostname}:4043`);
@@ -41,8 +41,8 @@ export const useAppState = create<AppState>((set, get) => ({
       const data = JSON.parse(evt.data) as WsMessage;
 
       switch (data.type) {
-        case 'log':
-          addLog(data.log!);
+        case 'output':
+          addLog(data.output!);
           break;
 
         case 'containers':

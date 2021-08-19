@@ -11,8 +11,8 @@ export class LogService {
     this.logs.push(message);
 
     this.messagingService.sendMessage({
-      type: 'log',
-      log: {
+      type: 'output',
+      output: {
         container: containerName,
         date: new Date(),
         message: message

@@ -3,7 +3,6 @@ import { Button, Card, Table } from 'antd';
 import { PlusOutlined, SelectOutlined } from '@ant-design/icons';
 import styles from './containers.module.css';
 import { useContainersState } from '../state';
-import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 import { ContainerStatus } from '../../common/models';
 import { ContainerConnectionStatus } from './container-connection-status';
 import { capitalise } from '../../common/utils';

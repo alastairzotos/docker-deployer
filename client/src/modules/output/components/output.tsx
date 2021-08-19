@@ -1,9 +1,18 @@
 import * as React from 'react';
-import { LogsView } from '../../atomic/logs/logs-view';
+import { LogsContainer } from '../../atomic/logs/logs-container';
 import { useOutputState } from '../state';
+import { OutputItem } from './item';
 
 export const Output: React.FC = () => {
-  const logs = useOutputState(state => state.logs);
+  const outputs = useOutputState(state => state.outputs);
 
-  return <LogsView title="Output" logs={logs} />;
+  return (
+    <LogsContainer title="Output">
+    {
+      outputs.map((output, index) => (
+        <OutputItem key={index} output={output} />
+      ))
+    }
+    </LogsContainer>
+  )
 };

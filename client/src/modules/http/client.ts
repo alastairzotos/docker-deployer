@@ -5,8 +5,6 @@ import { ContainerStats } from '../containers/models';
 class HttpClient {
   private readonly baseUrl = `${window.location.protocol}//${window.location.hostname}:4042`;
 
-  constructor() {}
-
   async login(password: string): Promise<void> {
     const response = await axios.post(`${this.baseUrl}/login`, {
       password,
