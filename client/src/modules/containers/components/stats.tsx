@@ -1,10 +1,11 @@
-import { Col, Progress, Row, Spin, Statistic, Typography } from 'antd';
+import { Col, Progress, Row, Statistic, Typography } from 'antd';
 import * as React from 'react';
 import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 import { capitalise } from '../../common/utils';
+import { httpClient } from '../../http/client';
 import { useContainersState } from '../state';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 const ProgressWithTitle: React.FC<{ title: string, percent: number }> = ({ title, percent }) => (
   <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -19,19 +20,22 @@ const ProgressWithTitle: React.FC<{ title: string, percent: number }> = ({ title
   </div>
 );
 
-export const Stats: React.FC = () => {
+interface Props {
+  id: string;
+}
+
+export const Stats: React.FC<Props> = ({ id }) => {
   const containers = useContainersState(state => state.containers);
-  const selectedId = useContainersState(state => state.selectedId);
 
-  const statsFetchStatus = useContainersState(state => state.containerStatsFetchStatus);
-  const stats = useContainersState(state => state.selectedContainerStats);
-  const getStats = useContainersState(state => state.getContainerStats);
-
-  const selectedContainer = !!selectedId ? containers[selectedId] : null;
+  const stats = useContainersState(state => state.stats)[id];
 
   React.useEffect(() => {
-    getStats();
-  }, [selectedId, getStats]);
+    if (!stats) {
+      httpClient.getContainerStats(id);
+    }
+  }, [stats]);
+
+  const selectedContainer = containers[id];
 
   if (!selectedContainer) {
     return null;
@@ -39,23 +43,7 @@ export const Stats: React.FC = () => {
 
   return (
     <>
-      {statsFetchStatus === 'fetching' && (
-        <div
-          style={{
-            textAlign: 'center',
-            paddingTop: 50
-          }}
-        >
-          <Spin />
-        </div>
-      )}
-
-      {statsFetchStatus === 'error' && (
-        <Text type="danger">There was a problem getting container stats</Text>
-      )}
-
-      {statsFetchStatus === 'success' && !!stats && (
-
+      {!!stats && (
         <div style={{ padding: 24 }}>
           <Row>
             <Col span={8}>

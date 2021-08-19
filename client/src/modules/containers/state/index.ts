@@ -7,9 +7,7 @@ export interface ContainersStateValues {
   containers: ContainerStatuses;
   selectedId: string | null;
 
-  containerStatsFetchStatus: CallStatus | null;
-  selectedContainerStats: ContainerStats | null;
-  
+  stats: { [id: string]: ContainerStats };  
   logs: { [id: string]: string[] };
 }
 
@@ -17,9 +15,7 @@ export interface ContainersStateActions {
   setContainers: (containers: ContainerStatuses) => void;
   selectContainer: (id: string | null) => void;
 
-  setSelectedContainerStats: (stats: ContainerStats | null) => void;
-  getContainerStats: () => Promise<void>;
-
+  setContainerStats: (id: string, stats: ContainerStats | null) => void;
   addContainerLogs: (id: string, logs: string[]) => void;
 }
 
@@ -28,9 +24,8 @@ export type ContainersState = ContainersStateValues & ContainersStateActions;
 const initialState: ContainersStateValues = {
   containers: {},
   selectedId: null,
-  selectedContainerStats: null,
-  containerStatsFetchStatus: null,
 
+  stats: {},
   logs: {}
 };
 
@@ -41,24 +36,12 @@ export const useContainersState = create<ContainersState>((set, get) => ({
 
   selectContainer: id => set({ selectedId: id }),
 
-  setSelectedContainerStats: stats => set({ selectedContainerStats: stats }),
-
-  getContainerStats: async () => {
-    const selectedId = get().selectedId;
-
-    if (!!selectedId) {
-      try {
-        set({ containerStatsFetchStatus: 'fetching' });
-        const stats = await httpClient.getContainerStats(selectedId);
-
-        set({ selectedContainerStats: stats, containerStatsFetchStatus: 'success' });
-      } catch {
-        set({ containerStatsFetchStatus: 'error' });
-      }
-    } else {
-      set({ selectedContainerStats: null });
+  setContainerStats: (id, stats) => set({
+    stats: {
+      ...get().stats,
+      [id]: stats!
     }
-  },
+  }),
 
   addContainerLogs: (id, logs) => set({
     logs: {

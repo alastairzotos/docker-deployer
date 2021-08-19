@@ -29,7 +29,7 @@ export const ContainerDrawer: React.FC = () => {
         <>
           <Row style={fullHeight}>
             <Col span={14} style={fullHeight}>
-              <Stats />
+              <Stats id={selectedId} />
             </Col>
 
             <Col span={10} style={fullHeight}>

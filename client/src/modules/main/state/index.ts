@@ -26,6 +26,7 @@ export const useAppState = create<AppState>((set, get) => ({
     const addOutput = useOutputState.getState().addOutput;
     const setContainers = useContainersState.getState().setContainers;
     const addLogs = useContainersState.getState().addContainerLogs;
+    const setStats = useContainersState.getState().setContainerStats;
 
     const ws = new WebSocket(`ws://${window.location.hostname}:4043`);
     set({ connectionState: 'connecting', ws });
@@ -52,6 +53,10 @@ export const useAppState = create<AppState>((set, get) => ({
 
         case 'logs':
           addLogs(data.containerLogs?.id!, data.containerLogs?.logs!);
+          break;
+
+        case 'stats':
+          setStats(data.containerStats?.id!, data.containerStats?.stats!);
           break;
       }
     }

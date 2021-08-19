@@ -69,32 +69,41 @@ export class DockerService {
     }
   }
 
-  getContainerStats = async (id: string): Promise<ContainerStats | null> => {
+  getContainerStats = async (id: string) => {
     const container = await this.docker.container.get(id);
 
     if (container) {
       const statsStream = await container.stats() as any as Readable;
-      const stats = await this.promisifyStatsStream(statsStream);
 
-      const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
-      const systemCpuUsage = stats.cpu_stats.system_cpu_usage as number;
+      statsStream.on('data', (data: Buffer) => {
+        const stats = JSON.parse(data.toString());
 
-      const memUsage = stats.memory_stats.usage as number;
-      const limit = stats.memory_stats.limit as number;
+        const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
+        const systemCpuUsage = stats.cpu_stats.system_cpu_usage as number;
 
-      const networkKey = Object.keys(stats.networks)[0];
-      const rxBytes = stats.networks[networkKey].rx_bytes;
-      const txBytes = stats.networks[networkKey].tx_bytes;
+        const memUsage = stats.memory_stats.usage as number;
+        const limit = stats.memory_stats.limit as number;
 
-      return {
-        cpuPerc: (cpuUsage / systemCpuUsage) * 100,
-        memPerc: (memUsage / limit) * 100,
-        memUsage: `${prettyBytes(memUsage)} / ${prettyBytes(limit)}`,
-        netIOUsage: `${prettyBytes(rxBytes)} / ${prettyBytes(txBytes)}`
-      };
+        const networkKey = Object.keys(stats.networks)[0];
+        const rxBytes = stats.networks[networkKey].rx_bytes;
+        const txBytes = stats.networks[networkKey].tx_bytes;
+
+        const statsData: ContainerStats = {
+          cpuPerc: (cpuUsage / systemCpuUsage) * 100,
+          memPerc: (memUsage / limit) * 100,
+          memUsage: `${prettyBytes(memUsage)} / ${prettyBytes(limit)}`,
+          netIOUsage: `${prettyBytes(rxBytes)} / ${prettyBytes(txBytes)}`
+        };
+
+        this.messagingService.sendMessage({
+          type: 'stats',
+          containerStats: {
+            id,
+            stats: statsData
+          }
+        });
+      });
     }
-
-    return null;
   }
 
   toContainerStatus = async (container: Container): Promise<ContainerStatus> => {
@@ -109,15 +118,6 @@ export class DockerService {
       startedAt: this.timeService.format(new Date(status.data['State'].StartedAt))
     }
   }
-
-  private promisifyStatsStream = (stream: Readable): Promise<any> =>
-    new Promise((resolve, reject) => {
-      stream.on('data', (data: Buffer) => {
-        resolve(JSON.parse(data.toString()));
-
-        stream.destroy();
-      })
-    })
 
   private promisifyPullStream = (stream: Stream, container: string) =>
     new Promise((resolve, reject) => {
