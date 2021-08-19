@@ -4,10 +4,12 @@ import styles from './logs.module.css';
 
 interface Props {
   title?: string;
+  bodyHeightOffset?: number;
 }
 
 export const LogsContainer: React.FC<Props> = ({
   title = "Logs",
+  bodyHeightOffset = 0,
   children
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -24,7 +26,7 @@ export const LogsContainer: React.FC<Props> = ({
       className={styles.logs}
       bodyStyle={{
         backgroundColor: 'black',
-        height: `calc(100% - 90px)`,
+        height: `calc(100% - ${90 - bodyHeightOffset}px)`,
         width: '100%',
         padding: 0,
       }}

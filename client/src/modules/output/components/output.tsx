@@ -7,7 +7,7 @@ export const Output: React.FC = () => {
   const outputs = useOutputState(state => state.outputs);
 
   return (
-    <LogsContainer title="Output">
+    <LogsContainer title="Deployment Output">
     {
       outputs.map((output, index) => (
         <OutputItem key={index} output={output} />

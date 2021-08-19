@@ -1,6 +1,7 @@
 import { Typography } from 'antd';
 import * as React from 'react';
 import { LogsContainer } from '../../atomic/logs/logs-container';
+import { statusBarHeight } from '../../common/components/app-main';
 import { httpClient } from '../../http/client';
 import { useContainersState } from '../state';
 
@@ -20,7 +21,7 @@ export const Logs: React.FC<Props> = ({ id }) => {
   }, [logs]);
 
   return (
-    <LogsContainer>
+    <LogsContainer bodyHeightOffset={statusBarHeight}>
       {!!logs && logs.map((log, index) => (
         <React.Fragment key={index}>
           <Text type="success" key={index}>{log}</Text>

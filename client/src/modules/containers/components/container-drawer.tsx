@@ -1,8 +1,10 @@
 import * as React from 'react';
-import { Drawer, Row, Col } from 'antd';
+import SplitPane from 'react-split-pane';
+import { Drawer } from 'antd';
 import { useContainersState } from '../state';
 import { Logs } from './logs';
 import { Stats } from './stats';
+import { headerHeight, statusBarHeight } from '../../common/components/app-main';
 
 export const ContainerDrawer: React.FC = () => {
   const containers = useContainersState(state => state.containers);
@@ -11,8 +13,6 @@ export const ContainerDrawer: React.FC = () => {
 
   const selectedContainer = !!selectedId ? containers[selectedId] : null;
 
-  const fullHeight: React.CSSProperties = { height: '100%' };
-
   return (
     <Drawer
       title={selectedContainer ? selectedContainer.name : ''}
@@ -20,23 +20,23 @@ export const ContainerDrawer: React.FC = () => {
       placement="bottom"
       closable={true}
       onClose={() => selectContainer(null)}
-      height="350px"
+      height="370px"
+      style={{ bottom: statusBarHeight }}
       bodyStyle={{ padding: 0 }}
       mask={false}
       zIndex={1000}
     >
       {!!selectedContainer && !!selectedId && (
-        <>
-          <Row style={fullHeight}>
-            <Col span={14} style={fullHeight}>
-              <Stats id={selectedId} />
-            </Col>
-
-            <Col span={10} style={fullHeight}>
-              <Logs id={selectedId} />
-            </Col>
-          </Row>
-        </>
+        <SplitPane
+          split="vertical"
+          minSize={300}
+          style={{ height: `calc(100% - ${headerHeight - 8}px)` }}
+          defaultSize={parseInt(localStorage.getItem('container-split-pos')!, 10) || '60%'}
+          onChange={split => localStorage.setItem('container-split-pos', String(split))}
+        >
+          <Stats id={selectedId} />
+          <Logs id={selectedId} />
+        </SplitPane>
       )}
     </Drawer>
   )

@@ -1,9 +1,10 @@
-import { Col, Progress, Row, Statistic, Typography } from 'antd';
+import { Progress, Statistic, Typography } from 'antd';
 import * as React from 'react';
 import { ConnectionStatus } from '../../atomic/connection-status/connection-status';
 import { capitalise } from '../../common/utils';
 import { httpClient } from '../../http/client';
 import { useContainersState } from '../state';
+import styles from './stats.module.css';
 
 const { Title } = Typography;
 
@@ -37,42 +38,40 @@ export const Stats: React.FC<Props> = ({ id }) => {
 
   const selectedContainer = containers[id];
 
-  if (!selectedContainer) {
+  if (!selectedContainer || !stats) {
     return null;
   }
 
   return (
-    <>
-      {!!stats && (
-        <div style={{ padding: 24 }}>
-          <Row>
-            <Col span={8}>
-              <Statistic
-                title="Status"
-                value={capitalise(selectedContainer.status)}
-                prefix={<ConnectionStatus connected={selectedContainer.status === 'running'} />}
-              />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Memory / Limit" value={stats?.memUsage} />
-            </Col>
-            <Col span={8}>
-              <ProgressWithTitle title="Memory" percent={stats?.memPerc!} />
-            </Col>
-          </Row>
-          <Row>
-            <Col span={8}>
-              <Statistic title="Started" value={capitalise(selectedContainer.startedAt)} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Network I/O" value={stats?.netIOUsage} />
-            </Col>
-            <Col span={8}>
-              <ProgressWithTitle title="CPU" percent={stats?.cpuPerc!} />
-            </Col>
-          </Row>
-        </div>
-      )}
-    </>
-  )
+    <table className={styles.stats}>
+      <tbody>
+        <tr>
+          <td>
+            <Statistic
+              title="Status"
+              value={capitalise(selectedContainer.status)}
+              prefix={<ConnectionStatus connected={selectedContainer.status === 'running'} />}
+            />
+          </td>
+          <td>
+            <Statistic title="Memory / Limit" value={stats?.memUsage} />
+          </td>
+          <td>
+            <ProgressWithTitle title="Memory" percent={stats?.memPerc!} />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Statistic title="Started" value={capitalise(selectedContainer.startedAt)} />
+          </td>
+          <td>
+            <Statistic title="Network I/O" value={stats?.netIOUsage} />
+          </td>
+          <td>
+            <ProgressWithTitle title="CPU" percent={stats?.cpuPerc!} />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
 };

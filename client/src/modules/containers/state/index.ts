@@ -36,7 +36,7 @@ export const useContainersState = create<ContainersState>((set, get) => ({
 
   selectContainer: id => set({ selectedId: id }),
 
-  setContainerStats: (id, stats) => set({
+  setContainerStats: (id, stats) => !!stats && set({
     stats: {
       ...get().stats,
       [id]: stats!

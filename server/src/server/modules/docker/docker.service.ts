@@ -78,30 +78,32 @@ export class DockerService {
       statsStream.on('data', (data: Buffer) => {
         const stats = JSON.parse(data.toString());
 
-        const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
-        const systemCpuUsage = stats.cpu_stats.system_cpu_usage as number;
+        if (!!stats && !!stats.cpu_stats && !!stats.memory_stats && !!stats.networks && Object.keys(stats.networks).length > 0) {
+          const cpuUsage = stats.cpu_stats.cpu_usage.total_usage as number;
+          const systemCpuUsage = stats.cpu_stats.system_cpu_usage as number;
 
-        const memUsage = stats.memory_stats.usage as number;
-        const limit = stats.memory_stats.limit as number;
+          const memUsage = stats.memory_stats.usage as number;
+          const limit = stats.memory_stats.limit as number;
 
-        const networkKey = Object.keys(stats.networks)[0];
-        const rxBytes = stats.networks[networkKey].rx_bytes;
-        const txBytes = stats.networks[networkKey].tx_bytes;
+          const networkKey = Object.keys(stats.networks)[0];
+          const rxBytes = stats.networks[networkKey].rx_bytes;
+          const txBytes = stats.networks[networkKey].tx_bytes;
 
-        const statsData: ContainerStats = {
-          cpuPerc: (cpuUsage / systemCpuUsage) * 100,
-          memPerc: (memUsage / limit) * 100,
-          memUsage: `${prettyBytes(memUsage)} / ${prettyBytes(limit)}`,
-          netIOUsage: `${prettyBytes(rxBytes)} / ${prettyBytes(txBytes)}`
-        };
+          const statsData: ContainerStats = {
+            cpuPerc: (cpuUsage / systemCpuUsage) * 100,
+            memPerc: (memUsage / limit) * 100,
+            memUsage: `${prettyBytes(memUsage)} / ${prettyBytes(limit)}`,
+            netIOUsage: `${prettyBytes(rxBytes)} / ${prettyBytes(txBytes)}`
+          };
 
-        this.messagingService.sendMessage({
-          type: 'stats',
-          containerStats: {
-            id,
-            stats: statsData
-          }
-        });
+          this.messagingService.sendMessage({
+            type: 'stats',
+            containerStats: {
+              id,
+              stats: statsData
+            }
+          });
+        }
       });
     }
   }
