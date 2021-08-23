@@ -23,6 +23,9 @@ export const startServer = async () => {
   appService.app.post('/trigger-broadcast', authMiddleware.authenticate, mainController.triggerBroadcast);
   appService.app.get('/get-stats', authMiddleware.authenticate, mainController.getContainerStats);
   appService.app.get('/get-logs', authMiddleware.authenticate, mainController.getContainerLogs);
+  appService.app.post('/stop-container', authMiddleware.authenticate, mainController.stopContainer);
+  appService.app.post('/start-container', authMiddleware.authenticate, mainController.startContainer);
+  appService.app.post('/restart-container', authMiddleware.authenticate, mainController.restartContainer);
 
   messagingService.listen();
   appService.listen();

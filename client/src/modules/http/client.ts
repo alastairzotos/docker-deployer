@@ -36,6 +36,42 @@ class HttpClient {
       }
     })
   }
+
+  async stopContainer(id: string) {
+    await axios.post<string[]>(
+      `${this.baseUrl}/stop-container`,
+      { id },
+      {
+        headers: {
+          authorization: `Bearer ${useAuthState.getState().authToken}`
+        }
+      }
+    );
+  }
+
+  async startContainer(id: string) {
+    await axios.post<string[]>(
+      `${this.baseUrl}/start-container`,
+      { id },
+      {
+        headers: {
+          authorization: `Bearer ${useAuthState.getState().authToken}`
+        }
+      }
+    );
+  }
+
+  async restartContainer(id: string) {
+    await axios.post<string[]>(
+      `${this.baseUrl}/restart-container`,
+      { id },
+      {
+        headers: {
+          authorization: `Bearer ${useAuthState.getState().authToken}`
+        }
+      }
+    );
+  }
 }
 
 export const httpClient = new HttpClient();

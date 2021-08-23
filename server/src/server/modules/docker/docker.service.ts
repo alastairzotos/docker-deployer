@@ -7,6 +7,7 @@ import { ContainerStats, ContainerStatus, DeploymentInfo } from '../../models';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
 import { TimeService } from '../time/time.service';
+import { MainService } from '../main/main.service';
 
 @Service()
 export class DockerService {
@@ -15,7 +16,7 @@ export class DockerService {
   constructor(
     private messagingService: MessagingService,
     private logService: LogService,
-    private timeService: TimeService,
+    private timeService: TimeService
   ) {
     this.docker = new Docker({ socketPath: '/var/run/docker.sock' });
   }
@@ -45,6 +46,10 @@ export class DockerService {
   getContainerByName = async (name: string): Promise<Container> => {
     const containers = await this.listContainers();
     return containers.find(container => container.data['Names'][0] === name || container.data['Names'][0] === '/' + name);
+  }
+
+  getContainerById = async (id: string): Promise<Container> => {
+    return await this.docker.container.get(id);
   }
 
   getContainerLogs = async (id: string): Promise<void> => {

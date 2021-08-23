@@ -44,6 +44,27 @@ export class MainService {
     return this.logService.flush();
   }
 
+  stopContainer = async (id: string) => {
+    const container = await this.dockerService.getContainerById(id);
+    await container.stop();
+    await this.broadcastStatus();
+  }
+
+  startContainer = async (id: string) => {
+    const container = await this.dockerService.getContainerById(id);
+    await container.start();
+    await this.broadcastStatus();
+  }
+
+
+  restartContainer = async (id: string) => {
+    const container = await this.dockerService.getContainerById(id);
+    await container.stop();
+    await this.broadcastStatus();
+    await container.start();
+    await this.broadcastStatus();
+  }
+
   broadcastStatus = async () => {
     const containers = await await this.dockerService.listContainers(true);
 

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { Button, Card, Table } from 'antd';
-import { PlusOutlined, SelectOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import styles from './containers.module.css';
 import { useContainersState } from '../state';
 import { ContainerStatus } from '../../common/models';
 import { ContainerConnectionStatus } from './container-connection-status';
 import { capitalise } from '../../common/utils';
+import { ContainerActions } from './container-actions';
 
 export const Containers: React.FC = () => {
   const containers = useContainersState(state => state.containers);
@@ -57,18 +58,11 @@ export const Containers: React.FC = () => {
             render: (port: number) => port > 0 ? port : 'n/a'
           },
           {
-            title: 'View',
-            dataIndex: 'port',
+            title: 'Actions',
+            dataIndex: 'x',
             key: 'x',
-            render: (port: number) => (
-              port > 0
-                ? (
-                  <a target="_blank" href={`${window.location.protocol}//${window.location.hostname}:${port}`}>
-                    View&nbsp;
-                    <SelectOutlined rotate={90} />
-                  </a>
-                )
-                : null
+            render: (_: any, record: ContainerStatus) => (
+              <ContainerActions container={record} />
             )
           }
         ]}
