@@ -7,7 +7,6 @@ import { ContainerStats, ContainerStatus, DeploymentInfo } from '../../models';
 import { LogService } from '../log/log.service';
 import { Service } from 'typedi';
 import { TimeService } from '../time/time.service';
-import { MainService } from '../main/main.service';
 
 @Service()
 export class DockerService {
