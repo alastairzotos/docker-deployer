@@ -21,7 +21,7 @@ export const Logs: React.FC<Props> = ({ id }) => {
   }, [logs]);
 
   return (
-    <LogsContainer bodyHeightOffset={statusBarHeight}>
+    <LogsContainer title="Logs" bodyHeightOffset={statusBarHeight}>
       {!!logs && logs.map((log, index) => (
         <React.Fragment key={index}>
           <Text type="success" key={index}>{log}</Text>

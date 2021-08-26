@@ -58,7 +58,8 @@ export class DockerService {
       const logsStream = await container.logs({
         follow: true,
         stdout: true,
-        stderr: true
+        stderr: true,
+        tail: 100
       }) as any as Readable;
 
       logsStream.on('data', (data: Buffer) => {
