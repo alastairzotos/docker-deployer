@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Button, Card, Table } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { Card, Table } from 'antd';
 import styles from './containers.module.css';
 import { useContainersState } from '../state';
 import { ContainerStatus } from '../../common/models';
 import { ContainerConnectionStatus } from './container-connection-status';
 import { capitalise } from '../../common/utils';
 import { ContainerActions } from './container-actions';
+import { AddDeployment } from './add-deployment';
 
 export const Containers: React.FC = () => {
   const containers = useContainersState(state => state.containers);
@@ -17,11 +17,7 @@ export const Containers: React.FC = () => {
       title="Containers"
       className={styles.containers}
       bodyStyle={{ padding: 0, height: 'calc(100% - 90px)' }}
-      extra={
-        <Button type="default" size="small">
-          <PlusOutlined /> Deployment
-        </Button>
-      }
+      extra={<AddDeployment />}
     >
       <Table
         columns={[

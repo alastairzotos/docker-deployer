@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthState } from '../auth/state';
+import { DeploymentInfo } from '../common/models';
 import { ContainerStats } from '../containers/models';
 
 class HttpClient {
@@ -77,6 +78,18 @@ class HttpClient {
     await axios.post<string[]>(
       `${this.baseUrl}/delete-container`,
       { id },
+      {
+        headers: {
+          authorization: `Bearer ${useAuthState.getState().authToken}`
+        }
+      }
+    );
+  }
+
+  async createDeployment(info: DeploymentInfo) {
+    await axios.post<string[]>(
+      `${this.baseUrl}/deploy`,
+      info,
       {
         headers: {
           authorization: `Bearer ${useAuthState.getState().authToken}`

@@ -25,8 +25,6 @@ export const ContainerActions: React.FC<Props> = ({ container: { id, status, por
     httpClient.restartContainer(id);
   }
 
-  const handleDeleteClick = () => setDeleteModalVisible(true);
-
   const handleDelete = () => {
     httpClient.deleteContainer(id);
     setDeleteModalVisible(false);
@@ -58,7 +56,7 @@ export const ContainerActions: React.FC<Props> = ({ container: { id, status, por
               </Menu.Item>
             )}
             <Menu.Item>
-              <a onClick={handleDeleteClick}><Text type="danger">Delete</Text></a>
+              <a onClick={() => setDeleteModalVisible(true)}><Text type="danger">Delete</Text></a>
             </Menu.Item>
           </Menu>
         }
@@ -73,6 +71,7 @@ export const ContainerActions: React.FC<Props> = ({ container: { id, status, por
         title="Delete container?"
         visible={deleteModalVisible}
         onOk={handleDelete}
+        onCancel={() => setDeleteModalVisible(false)}
         okText="Delete"
         okType="danger"
       >
