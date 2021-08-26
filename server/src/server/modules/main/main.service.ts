@@ -56,12 +56,19 @@ export class MainService {
     await this.broadcastStatus();
   }
 
-
   restartContainer = async (id: string) => {
     const container = await this.dockerService.getContainerById(id);
     await container.stop();
     await this.broadcastStatus();
     await container.start();
+    await this.broadcastStatus();
+  }
+
+  deleteContainer = async (id: string) => {
+    const container = await this.dockerService.getContainerById(id);
+    await container.stop();
+    await this.broadcastStatus();
+    await container.delete();
     await this.broadcastStatus();
   }
 

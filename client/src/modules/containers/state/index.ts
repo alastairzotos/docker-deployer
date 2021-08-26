@@ -1,6 +1,5 @@
 import create from 'zustand';
-import { CallStatus, ContainerStatuses } from '../../common/models';
-import { httpClient } from '../../http/client';
+import { ContainerStatuses } from '../../common/models';
 import { ContainerStats } from '../models';
 
 export interface ContainersStateValues {

@@ -26,6 +26,7 @@ export const startServer = async () => {
   appService.app.post('/stop-container', authMiddleware.authenticate, mainController.stopContainer);
   appService.app.post('/start-container', authMiddleware.authenticate, mainController.startContainer);
   appService.app.post('/restart-container', authMiddleware.authenticate, mainController.restartContainer);
+  appService.app.post('/delete-container', authMiddleware.authenticate, mainController.deleteContainer);
 
   messagingService.listen();
   appService.listen();

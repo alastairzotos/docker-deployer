@@ -48,4 +48,9 @@ export class MainController {
     await this.mainService.restartContainer(req.body.id as string);
     res.sendStatus(201);
   }
+
+  deleteContainer = async (req: express.Request, res: express.Response) => {
+    await this.mainService.deleteContainer(req.body.id as string);
+    res.sendStatus(201);
+  }
 }

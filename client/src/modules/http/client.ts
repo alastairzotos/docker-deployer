@@ -72,6 +72,18 @@ class HttpClient {
       }
     );
   }
+
+  async deleteContainer(id: string) {
+    await axios.post<string[]>(
+      `${this.baseUrl}/delete-container`,
+      { id },
+      {
+        headers: {
+          authorization: `Bearer ${useAuthState.getState().authToken}`
+        }
+      }
+    );
+  }
 }
 
 export const httpClient = new HttpClient();
